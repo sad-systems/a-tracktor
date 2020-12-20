@@ -1,0 +1,23 @@
+$color: #0000ff;
+
+.scss-demo-1 {
+  color: $color;
+}
+
+.analyzer {
+  background-color: #000;
+  width: 50%;
+}
+
+.waveform {
+  background-color: #000;
+  width: 98%;
+}
+
+.amplitude {
+  width: 2%;
+}
+
+.slot1, .slot2 {
+  display: flex;
+}

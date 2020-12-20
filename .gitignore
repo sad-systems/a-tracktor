@@ -1,0 +1,24 @@
+# Third-party libs (dependencies):
+
+/node_modules
+/vendor
+
+# NextJS (cache):
+
+/.next
+
+# Private project files:
+
+/tmp
+/log
+
+# Compiled output:
+
+/out
+/out-tsc
+/build
+/dist
+
+# Environment:
+
+.env.*
