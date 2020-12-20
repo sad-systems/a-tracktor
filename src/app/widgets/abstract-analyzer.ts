@@ -4,15 +4,17 @@ import { DEFAULT_WIDGET_BACKGROUND_COLOR, DEFAULT_WIDGET_HEIGHT, DEFAULT_WIDGET_
  * Interface of the static audio source storage item.
  */
 export interface IAudioSource {
-    audioElement?: HTMLMediaElement,
-    audioContext?: AudioContext;
-    mediaSource?: MediaElementAudioSourceNode;
+    audioElement: HTMLMediaElement,
+    audioContext: AudioContext;
+    mediaSource: MediaElementAudioSourceNode;
 }
 
 /**
  * Basic analyzer options.
  */
 export interface IAbstractAnalyzerOptions {
+    sourceChannel?: number;
+    connectDestination?: boolean;
     fftSize?: number;
     color?: string;
 }
@@ -22,15 +24,17 @@ export interface IAbstractAnalyzerOptions {
  */
 export abstract class AbstractAnalyzer {
 
-    // protected viewElement?: HTMLElement | null;
+    protected viewElement: HTMLElement;
     protected canvasElement: HTMLCanvasElement;
     protected canvasContext: CanvasRenderingContext2D;
     protected width: number;
     protected height: number;
 
-    // protected audioElement: HTMLMediaElement;
+    protected audioElement: HTMLMediaElement;
     protected audioContext: AudioContext;
     protected mediaSource: MediaElementAudioSourceNode;
+    protected sourceChannel: number;
+    protected connectDestination: boolean;
 
     protected analyser: AnalyserNode;
     protected bufferLength: number;
@@ -47,19 +51,20 @@ export abstract class AbstractAnalyzer {
     /**
      * Constructor.
      *
-     * @param audioElement Input HTML element with source audio (HTML audio tag).
-     * @param viewElement  The HTML element to render the widget.
-     * @param options      For the future.
+     * @param audioSource Input HTML element with source audio (HTML audio tag) or structure of IAudioSource.
+     * @param viewElement The HTML element to render the widget. Will be auto created if undefined or null.
+     * @param options     Analyzer options.
      */
     constructor(
-        protected audioElement?: HTMLMediaElement | null, // | IAudioSource | null,
-        protected viewElement?: HTMLElement | null,
+        audioSource?: HTMLMediaElement | MediaElementAudioSourceNode | null,
+        viewElement?: HTMLElement | null,
         options?: IAbstractAnalyzerOptions,
         )
     {
-        // this.viewElement = viewElement;
+        this.setAudioSource(audioSource);
+        this.setViewElement(viewElement);
         this.setOption(options);
-        this.init();
+        this.initView();
     }
 
     /**
@@ -145,9 +150,30 @@ export abstract class AbstractAnalyzer {
         options = options || { };
         this.fftSize = options.fftSize || this.getDefaultFftSize();
         this.color = AbstractAnalyzer.normalizeColor(options.color || this.getDefaultColor());
+        this.sourceChannel = options.sourceChannel || 0;
+        this.connectDestination = options.connectDestination === undefined ? true : options.connectDestination;
     }
 
-    protected init() {
+    protected setViewElement(viewElement?: HTMLElement | null) {
+        this.viewElement = viewElement || this.getDefaultViewElement();
+    }
+
+    protected setAudioSource(audioSource?: HTMLMediaElement | MediaElementAudioSourceNode | null) {
+        if (audioSource) {
+            if (audioSource instanceof HTMLMediaElement) {
+                this.audioElement = audioSource;
+            } else {
+                this.mediaSource = audioSource;
+            }
+        }
+
+        if (!this.audioElement) {
+            this.audioElement = document.createElement('audio');
+            // document.body.append(this.audioElement);
+        }
+    }
+
+    protected initView() {
         this.viewElement = this.viewElement || this.getDefaultViewElement();
         this.canvasElement = document.createElement('canvas');
         this.canvasContext = this.canvasElement.getContext('2d');
@@ -159,10 +185,14 @@ export abstract class AbstractAnalyzer {
     protected initAudio() {
         if (this.isAudioContextInitialized) return;
 
-        const audioSource = AbstractAnalyzer.createAudioSourceForElement(this.audioElement);
+        if (this.mediaSource) {
+            this.audioContext = this.mediaSource.context as AudioContext;
+        } else {
+            const audioSource = AbstractAnalyzer.createAudioSourceForElement(this.audioElement, this.connectDestination);
 
-        this.audioContext = audioSource.audioContext;
-        this.mediaSource  = audioSource.mediaSource;
+            this.audioContext = audioSource.audioContext;
+            this.mediaSource = audioSource.mediaSource;
+        }
 
         this.createAnalyzer();
 
@@ -170,8 +200,8 @@ export abstract class AbstractAnalyzer {
     }
 
     protected createAnalyzer() {
-        this.analyser = this.audioContext.createAnalyser(); // Создание анализатора сигнала
-        this.mediaSource.connect(this.analyser);            // Соединение с источником данных
+        this.analyser = this.audioContext.createAnalyser();           // Создание анализатора сигнала
+        this.mediaSource.connect(this.analyser, this.sourceChannel);  // Соединение анализатора с каналом источника данных
     }
 
     protected initAnalyzer() {
@@ -180,14 +210,16 @@ export abstract class AbstractAnalyzer {
         this.dataArray = new Uint8Array(this.bufferLength);
     }
 
-    protected static createAudioSourceForElement(audioElement: HTMLMediaElement): IAudioSource {
+    protected static createAudioSourceForElement(audioElement: HTMLMediaElement, connectDestination: boolean): IAudioSource {
         let audioSource = AbstractAnalyzer.findAudioSourceByElement(audioElement);
 
         if (!audioSource) {
             const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)(); // Аудио контекст
             const mediaSource = audioContext.createMediaElementSource(audioElement);                // Источник аудио данных
 
-            mediaSource.connect(audioContext.destination); // Приёмник аудио данных
+            if (connectDestination) {
+                mediaSource.connect(audioContext.destination); // Соединение с приёмником аудио данных
+            }
 
             audioSource = {
                 audioElement,

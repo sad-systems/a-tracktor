@@ -54,7 +54,7 @@ export class AmplitudeAnalyzer extends AbstractAnalyzer {
         this.analyser = this.audioContext.createAnalyser(); // Создание анализатора сигнала первого канала (левого)
 
         if (this.stereo) {
-            const splitter = this.audioContext.createChannelSplitter(2);
+            const splitter = this.audioContext.createChannelSplitter(2); // Создание разделителя каналов.
 
             this.mediaSource.connect(splitter);
             this.analyser2 = this.audioContext.createAnalyser(); // Создание анализатора сигнала второго канала (правого)
@@ -62,7 +62,7 @@ export class AmplitudeAnalyzer extends AbstractAnalyzer {
             splitter.connect(this.analyser, 0);  // Left channel
             splitter.connect(this.analyser2, 1); // Right channel
         } else {
-            this.mediaSource.connect(this.analyser);
+            this.mediaSource.connect(this.analyser, this.sourceChannel);
         }
     }
 

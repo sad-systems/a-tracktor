@@ -20,13 +20,12 @@ const w = new WaveFormAnalyzer(audioElement, viewElement2, { color: '#00f' });
 const a = new AmplitudeAnalyzer(audioElement, viewElement4, { colorClip: '#00f' });
 export const waveFormGraph = new WaveFormGraph(audioElement, viewElement3);
 
-const f2 = new FrequencyAnalyzer(audioElement); // , null, { fftSize: 32, color: '#00f' });
 
 waveFormGraph.render();
 
-const play = () => { console.log('play'); f.start(); w.start(); a.start(); f2.start(); return true; }
-const pause = () => { console.log('pause');  f.pause(); w.pause(); a.pause(); f2.pause(); return true; }
-export const stop = () => { console.log('stop');  f.stop(); w.stop(); a.stop(); f2.stop(); audioElement.currentTime = 0; return true; }
+const play = () => { console.log('play'); f.start(); w.start(); a.start(); return true; }
+const pause = () => { console.log('pause');  f.pause(); w.pause(); a.pause(); return true; }
+export const stop = () => { console.log('stop');  f.stop(); w.stop(); a.stop(); audioElement.currentTime = 0; return true; }
 
 const cursor = document.createElement('div');
 cursor.style.backgroundColor = '#fff7';

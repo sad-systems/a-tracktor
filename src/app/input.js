@@ -1,4 +1,4 @@
-import { stop, waveFormGraph } from './controls';
+import { stop, waveFormGraph } from './test0';
 
 const audioElement = document.getElementById('audio');
 const inputElement = document.getElementById('input');
