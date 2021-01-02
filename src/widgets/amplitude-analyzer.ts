@@ -1,4 +1,4 @@
-import { AbstractAnalyzer, IAbstractAnalyzerOptions } from './abstract-analyzer';
+import { AbstractAnalyzer, IAbstractAnalyzerOptions } from '../lib/abstract-analyzer';
 
 /**
  * Options for the Amplitude analyzer.
@@ -102,7 +102,7 @@ export class AmplitudeAnalyzer extends AbstractAnalyzer {
 
         if (this.stereo) {
             this.drawLevel(this.analyser, 0, this.width / 2 - 1, 0, this.height);
-            this.drawLevel(this.analyser2, this.width / 2 /*+ 1*/, this.width / 2 - 1, 0, this.height);
+            this.drawLevel(this.analyser2, this.width / 2, this.width / 2 - 1, 0, this.height);
         } else {
             this.drawLevel(this.analyser, 0, this.width, 0, this.height);
         }

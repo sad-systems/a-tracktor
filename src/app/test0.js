@@ -1,9 +1,9 @@
 // Control elements
 
-import { FrequencyAnalyzer } from './widgets/frequency-analyzer';
-import { WaveFormAnalyzer } from './widgets/wave-form-analyzer';
-import { WaveFormGraph } from './widgets/wave-form-graph';
-import { AmplitudeAnalyzer } from './widgets/amplitude-analyzer';
+import { FrequencyAnalyzer } from '../widgets/frequency-analyzer';
+import { WaveFormAnalyzer } from '../widgets/wave-form-analyzer';
+import { WaveFormGraph } from '../widgets/wave-form-graph';
+import { AmplitudeAnalyzer } from '../widgets/amplitude-analyzer';
 
 const audioElement = document.getElementById('audio');
 const playElement = document.getElementById('play');

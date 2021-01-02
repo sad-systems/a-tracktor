@@ -1,6 +1,6 @@
-import { FrequencyAnalyzer } from './widgets/frequency-analyzer';
-import { AmplitudeAnalyzer } from "./widgets/amplitude-analyzer";
-import { WaveFormAnalyzer } from "./widgets/wave-form-analyzer";
+import { FrequencyAnalyzer } from '../widgets/frequency-analyzer';
+import { AmplitudeAnalyzer } from "../widgets/amplitude-analyzer";
+import { WaveFormAnalyzer } from "../widgets/wave-form-analyzer";
 
 const button = document.createElement('button');
 button.append(document.createTextNode('Start Analyze'));

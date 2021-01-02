@@ -1,4 +1,4 @@
-import { AbstractAnalyzer } from './abstract-analyzer';
+import { AbstractAnalyzer } from '../lib/abstract-analyzer';
 
 /**
  * Frequency analyzer widget.
