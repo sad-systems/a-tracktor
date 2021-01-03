@@ -16,8 +16,20 @@
 
 /out
 /out-tsc
-/build
-/dist
+#/build
+#/dist
+
+# Compiled demo
+/demo
+
+# Debug files
+/debug
+
+# Docs
+
+/docs
+!/docs/assets/images/*
+!/docs/public/*
 
 # Environment:
 

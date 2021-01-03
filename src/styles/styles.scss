@@ -1,23 +1,68 @@
-$color: #0000ff;
+$main-bg-color: #f0f0f0cc;
 
-.scss-demo-1 {
-  color: $color;
+body {
+  background-image: url("../assets/bg.jpg");
+  background-size: cover;
+  background-position: center;
+}
+
+.logo {
+  position: absolute;
+  width: 90px;
+  height: 30px;
+  background-image: url("../assets/sad-logo.png");
+  background-repeat: no-repeat;
+  left: 1.5rem;
+  top: .75rem;
+  z-index: -1;
+  opacity: .25;
+}
+
+h1 {
+  text-align: center;
+  color: #c3c3c3cc;
+  text-shadow: #fff -1px -1px 0,
+  #333 1px 1px 0;
+}
+
+.caption {
+  padding: 0.5em 1em;
+  background: rgb(4,41,99);
+  background: linear-gradient(90deg, rgba(4,41,99,1) 0%, rgba(0,218,255,1) 35%, rgba(0,0,0,0) 100%);
+  color: #fff;
 }
 
 .analyzer {
-  background-color: #000;
-  width: 50%;
+  background-color: #2a2a2ac0;
+  width: 100%;
+  border: 1px solid;
+  border-color: #000 #ccc8 #ccc8 #000;
 }
 
-.waveform {
-  background-color: #000;
-  width: 98%;
+.wavegraph {
+  cursor: pointer;
 }
 
-.amplitude {
-  width: 2%;
+.controls {
+  margin-top: 1em;
+  text-align: center;
 }
 
-.slot1, .slot2 {
-  display: flex;
+.list-group-item {
+  background: $main-bg-color;
+}
+
+.btn-link {
+  color: #03679a;
+}
+
+.btn-primary {
+  // background: linear-gradient(0deg, rgba(4,41,99,1) 0%, rgba(0,218,255,1) 50%, rgba(0,0,0,0) 100%);
+  background: linear-gradient(0deg, #3d629c 0%, #00daff 50%, #3d629c 100%);
+  padding: 1em;
+}
+
+footer {
+  text-align: center;
+  padding: 2em;
 }
