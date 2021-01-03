@@ -1,16 +1,44 @@
+/**
+ * Waveform graphic draw widget.
+ *
+ * ![](media://images/wavegraph-widget.jpg)
+ *
+ * Example:
+ * ```
+ * const audioElement = document.getElementById('audio');
+ * const viewElement = document.getElementById('div-analyzer');
+ *
+ * const waveFormGraph = new WaveformGraph(audioElement, viewElement, { colorPositive: '#00daff', colorNegative: '#00b6d5' });
+ * waveFormGraph.render();
+ * ```
+ *
+ * @packageDocumentation
+ */
 import { DEFAULT_WIDGET_HEIGHT, DEFAULT_WIDGET_WIDTH } from '../lib/defines';
 
 /**
  * Options for the WaveformGraph widget.
  */
 export interface IWaveFormGraphOptions {
-    sourceChannel?: number; // undefined = Max of the both channels
+    /**
+     * The number of the source channel to analyze.
+     *   - 0 - left channel
+     *   - 1 - right channel
+     *   - undefined - Max of the both channels
+     */
+    sourceChannel?: number;
+    /**
+     * Color of the positive values.
+     */
     colorPositive?: string;
+    /**
+     * Color of the negative values.
+     */
     colorNegative?: string;
 }
 
 /**
- * Wave form graphic draw widget.
+ * Waveform graphic draw widget.
  */
 export class WaveformGraph {
 

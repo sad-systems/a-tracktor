@@ -1,7 +1,24 @@
+/**
+ * Waveform analyzer widget.
+ *
+ * ![](media://images/wave-widget.jpg)
+ *
+ * Example:
+ * ```
+ * const audioElement = document.getElementById('audio');
+ * const viewElement = document.getElementById('div-analyzer');
+ *
+ * const w = new WaveformAnalyzer(audioElement, viewElement, { color: '#00ff00' });
+ *
+ * w.start();
+ * ```
+ *
+ * @packageDocumentation
+ */
 import { AbstractAnalyzer } from '../lib/abstract-analyzer';
 
 /**
- * Wave form analyzer widget.
+ * Waveform analyzer widget.
  */
 export class WaveformAnalyzer extends AbstractAnalyzer {
 

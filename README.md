@@ -88,5 +88,4 @@ ISC
 
 ## Credits
 
-  * __author__: Mr Digger
-  * __copyright__:  © [SAD-Systems](http://sad-systems.ru), 2021
+  MrDigger © [SAD-Systems](http://sad-systems.ru), 2021

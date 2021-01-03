@@ -27,9 +27,7 @@
 
 # Docs
 
-/docs
-!/docs/assets/images/*
-!/docs/public/*
+/docs/public
 
 # Environment:
 

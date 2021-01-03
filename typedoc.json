@@ -1,0 +1,9 @@
+{
+  "readme": "docs/includes/README.md",
+  "includeVersion": true,
+  "entryPoints": ["src/lib.ts", "src/lib", "src/widgets"],
+  "out": "docs/public",
+  "media": "docs/assets",
+  "includes": "docs/includes",
+  "disableSources": true
+}
