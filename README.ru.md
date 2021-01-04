@@ -1,4 +1,4 @@
-# ![](docs/assets/images/a-tractor.jpg)
+# <img src="docs/assets/images/a-tractor.jpg" width="100%">
 
 Javascript библиотека виджетов для визуализации аудио данных на веб странице.
 
