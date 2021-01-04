@@ -1,6 +1,6 @@
-# Audio-tracktor
+# ![](docs/assets/images/a-tractor.jpg)
 
-Библиотека виджетов для визуализации аудио данных.
+Javascript библиотека виджетов для визуализации аудио данных на веб странице.
 
 > Change language: [![Русский](docs/assets/images/ru.gif)](README.ru.md) [![English](docs/assets/images/en.gif)](README.md)
 
@@ -13,42 +13,14 @@
 
 Библиотека содержит набор виджетов для визуализации аудио данных на веб странице.
 
-## Как использовать
-
-Установка:
-```
-yarn add @sad-systems/a-tracktor
-```
-
-Подключение к проекту:
-
-```javascript
-import Widgets from '@sad-systems/a-tracktor';
-
-const audioElement = document.getElementById('audio');
-const viewElement1 = document.getElementById('div-analyzer');
-const playBtnElement = document.getElementById('btn-play');
-
-const f = new Widgets.FrequencyAnalyzer(audioElement, viewElement1, { color: '#ffb21d' });
-
-playBtnElement.onclick = () => { 
-    if (audioElement.paused) {
-        f.start();
-        audioElement.play();
-    } else {
-        f.stop();
-        audioElement.pause();
-    }
-}
-```` 
-
-## Живая демонстрация
-    
-Посмотрите как это работает на [живом примере](http://examples.sad-systems.ru/a-tracktor)
-   
 ## Документация
 
-Посмотреть [oписание](http://examples.sad-systems.ru/a-tracktor/docs/).
+Подробную документацию с примерами использования и установки смотрите
+[здесь](http://examples.sad-systems.ru/a-tracktor/docs/).
+
+## Живая демонстрация
+
+Посмотрите как это работает на [живом примере](http://examples.sad-systems.ru/a-tracktor)
 
 ## Разработка
  
@@ -74,6 +46,11 @@ yarn start
 ### Компиляция и минификация для рабочей версии
 ```
 yarn build
+```
+
+### Сборка документации
+```
+yarn docs
 ```
 
 ### Сборка демо проекта

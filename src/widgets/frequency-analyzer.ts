@@ -10,7 +10,12 @@
  *
  * const f = new FrequencyAnalyzer(audioElement, viewElement, { fftSize: 256,  color: '#ffb21d' });
  *
- * f.start();
+ * // We can start only after user starts interact with our page.
+ * // This is because of HTML Web Audio API restriction.
+ * document.body.onclick = () => {
+ *   audioElement.play();
+ *   f.start();
+ * }
  * ```
  *
  * @packageDocumentation

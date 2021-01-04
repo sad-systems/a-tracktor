@@ -4,13 +4,18 @@
  * ![](media://images/amp-widget.jpg)
  *
  * Example:
- * ```
+ * ```javascript
  * const audioElement = document.getElementById('audio');
  * const viewElement = document.getElementById('div-analyzer');
  *
  * const a = new AmplitudeAnalyzer(audioElement, viewElement, { colorClip: '#f00' });
  *
- * a.start();
+ * // We can start only after user starts interact with our page.
+ * // This is because of HTML Web Audio API restriction.
+ * document.body.onclick = () => {
+ *   audioElement.play();
+ *   a.start();
+ * }
  * ```
  *
  * @packageDocumentation

@@ -1,4 +1,4 @@
-$main-bg-color: #f0f0f0cc;
+$main-bg-color: #f0f0f0aa;
 
 body {
   background-image: url("../assets/bg.jpg");
@@ -16,6 +16,35 @@ body {
   top: .75rem;
   z-index: -1;
   opacity: .25;
+}
+
+.docs {
+  display: block;
+  position: absolute;
+  font-size: 40px;
+  cursor: pointer;
+  width: 1em;
+  height: 1em;
+  right: 1.5rem;
+  top: .75rem;
+  background-image: url("../assets/book.png");
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+.external-link {
+  color: #01a7d2;
+
+  &:hover {
+    color: #cae7e7;
+  }
+}
+
+.github-link {
+  padding-left: 1.5em;
+  background-image: url("../assets/github.svg");
+  background-repeat: no-repeat;
+  background-position: left center;
 }
 
 h1 {
@@ -65,4 +94,10 @@ h1 {
 footer {
   text-align: center;
   padding: 2em;
+
+  // Main footer message
+  .footer-main {
+    font-size: 18px;
+    margin-bottom: 5px;
+  }
 }

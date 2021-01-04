@@ -10,7 +10,12 @@
  *
  * const w = new WaveformAnalyzer(audioElement, viewElement, { color: '#00ff00' });
  *
- * w.start();
+ * // We can start only after user starts interact with our page.
+ * // This is because of HTML Web Audio API restriction.
+ * document.body.onclick = () => {
+ *   audioElement.play();
+ *   w.start();
+ * }
  * ```
  *
  * @packageDocumentation

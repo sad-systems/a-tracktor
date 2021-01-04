@@ -2,21 +2,51 @@
  * Interface of the static audio source storage item.
  */
 export interface IAudioSource {
+    /**
+     * Reference to the HTML audio element taken as the source of audio data.
+     */
     audioElement: HTMLMediaElement;
+    /**
+     * Audio context for the audio data.
+     * [more details](https://developer.mozilla.org/en-US/docs/Web/API/AudioContext)
+     */
     audioContext: AudioContext;
+    /**
+     * The media source for the audio data.
+     * [more details](https://developer.mozilla.org/en-US/docs/Web/API/MediaElementAudioSourceNode)
+     */
     mediaSource: MediaElementAudioSourceNode;
 }
 /**
  * Basic analyzer options.
  */
 export interface IAbstractAnalyzerOptions {
+    /**
+     * The number of the source channel to analyze.
+     *   - 0 - left channel (by default)
+     *   - 1 - right channel
+     */
     sourceChannel?: number;
+    /**
+     * Should or not to connect the analyzer to the destination output.
+     * `true` by default.
+     */
     connectDestination?: boolean;
+    /**
+     * An unsigned long value and represents the window size in samples that is used when performing
+     * a Fast Fourier Transform (FFT) to get frequency domain data.
+     * Must be a power of 2 between 2^5 and 2^15, so one of: 32, 64, 128, 256, 512, 1024, 2048, 4096, 8192, 16384, and 32768.
+     */
     fftSize?: number;
+    /**
+     * Main color of widget drawing.
+     */
     color?: string;
 }
 /**
  * Abstract analyzer widget.
+ *
+ * This class is the basic class to inherit and implement other widgets.
  */
 export declare abstract class AbstractAnalyzer {
     protected viewElement: HTMLElement;
@@ -41,24 +71,24 @@ export declare abstract class AbstractAnalyzer {
      * Constructor.
      *
      * @param audioSource Input HTML element with source audio (HTML audio tag) or structure of IAudioSource.
-     * @param viewElement The HTML element to render the widget. Will be auto created if undefined or null.
+     * @param viewElement The HTML element to render the widget. Will be auto created if it is undefined or null.
      * @param options     Analyzer options.
      */
     constructor(audioSource?: HTMLMediaElement | MediaElementAudioSourceNode | null, viewElement?: HTMLElement | null, options?: IAbstractAnalyzerOptions);
     /**
-     * Start rendering.
+     * Starts rendering.
      */
     start(): void;
     /**
-     * Pause rendering.
+     * Pauses rendering.
      */
     pause(): void;
     /**
-     * Stop rendering.
+     * Stops rendering.
      */
     stop(): void;
     /**
-     * Updates the canvas size depended on element size.
+     * Updates the canvas size depended on the [[constructor|viewElement]] size.
      */
     resize(): void;
     /**

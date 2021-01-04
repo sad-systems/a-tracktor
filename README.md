@@ -1,6 +1,6 @@
-# Audio-tracktor
+# ![](docs/assets/images/a-tractor.jpg)
 
-The library of widgets for visualizing audio data.
+The Javascript library of widgets for visualizing audio data on a web page.
 
 > Сменить язык: [![Русский](docs/assets/images/ru.gif)](README.ru.md) [![English](docs/assets/images/en.gif)](README.md)
 
@@ -11,45 +11,16 @@ The library of widgets for visualizing audio data.
     
 ## Description
 
-The library contains a set of widgets to visualize audio data on the web page.
-
-## Usage
-
-Install:
-```
-yarn add @sad-systems/a-tracktor
-```
-
-Inject to the project:
-
-```javascript
-import Widgets from '@sad-systems/a-tracktor';
-
-const audioElement = document.getElementById('audio');
-const viewElement1 = document.getElementById('div-analyzer');
-const playBtnElement = document.getElementById('btn-play');
-
-const f = new Widgets.FrequencyAnalyzer(audioElement, viewElement1, { color: '#ffb21d' });
-
-playBtnElement.onclick = () => { 
-    if (audioElement.paused) {
-        f.start();
-        audioElement.play();
-    } else {
-        f.stop();
-        audioElement.pause();
-    }
-}
-````   
-    
-## Live demo
-
-Try the [live demo](http://examples.sad-systems.ru/a-tracktor)
-  
+The library contains a set of widgets to visualize audio data on a web page.
 
 ## Documentation
 
-View [description](http://examples.sad-systems.ru/a-tracktor/docs/).
+See detailed documentation with examples of usage and installation
+[here](http://examples.sad-systems.ru/a-tracktor/docs/).
+
+## Live demo
+
+Try the [live demo](http://examples.sad-systems.ru/a-tracktor)
 
 ## Development
 
@@ -75,6 +46,11 @@ yarn start
 ### Compiles and minifies for production
 ```
 yarn build
+```
+
+### Build the docs
+```
+yarn docs
 ```
 
 ### Build the demo project

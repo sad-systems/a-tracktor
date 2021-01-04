@@ -4,13 +4,15 @@ exports.AbstractAnalyzer = void 0;
 var defines_1 = require("./defines");
 /**
  * Abstract analyzer widget.
+ *
+ * This class is the basic class to inherit and implement other widgets.
  */
 var AbstractAnalyzer = /** @class */ (function () {
     /**
      * Constructor.
      *
      * @param audioSource Input HTML element with source audio (HTML audio tag) or structure of IAudioSource.
-     * @param viewElement The HTML element to render the widget. Will be auto created if undefined or null.
+     * @param viewElement The HTML element to render the widget. Will be auto created if it is undefined or null.
      * @param options     Analyzer options.
      */
     function AbstractAnalyzer(audioSource, viewElement, options) {
@@ -21,7 +23,7 @@ var AbstractAnalyzer = /** @class */ (function () {
         this.initView();
     }
     /**
-     * Start rendering.
+     * Starts rendering.
      */
     AbstractAnalyzer.prototype.start = function () {
         this.initAudio();
@@ -29,20 +31,20 @@ var AbstractAnalyzer = /** @class */ (function () {
         this.render();
     };
     /**
-     * Pause rendering.
+     * Pauses rendering.
      */
     AbstractAnalyzer.prototype.pause = function () {
         cancelAnimationFrame(this.requestAniFrameID);
     };
     /**
-     * Stop rendering.
+     * Stops rendering.
      */
     AbstractAnalyzer.prototype.stop = function () {
         cancelAnimationFrame(this.requestAniFrameID);
         this.clear();
     };
     /**
-     * Updates the canvas size depended on element size.
+     * Updates the canvas size depended on the [[constructor|viewElement]] size.
      */
     AbstractAnalyzer.prototype.resize = function () {
         this.width = this.viewElement.offsetWidth || defines_1.DEFAULT_WIDGET_WIDTH;

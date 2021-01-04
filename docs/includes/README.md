@@ -1,11 +1,30 @@
-# Audio-tracktor
+# ![](media://images/a-tractor.jpg)
 
-The library contains a set of widgets to visualize audio data on the web page.
+The Javascript library contains a set of widgets to visualize audio data on a web page.
 
-## Install
+## Source code
+
+All the source code you can find on the
+[<img src="media://images/github.svg" width="16"/> GitHub](https://github.com/sad-systems/a-tracktor).
+
+## Live demo
+
+Try the [live demo](http://examples.sad-systems.ru/a-tracktor)
+
+## Installation
 ```
 yarn add @sad-systems/a-tracktor
 ```
+
+## Usage
+
+[[include:example-1.md]]
+
+[[include:example-2.md]]
+
+[[include:example-3.md]]
+
+[[include:example-4.md]]
 
 ## Credits
 

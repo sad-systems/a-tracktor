@@ -9,7 +9,12 @@
  * const viewElement = document.getElementById('div-analyzer');
  *
  * const waveFormGraph = new WaveformGraph(audioElement, viewElement, { colorPositive: '#00daff', colorNegative: '#00b6d5' });
- * waveFormGraph.render();
+ *
+ * // We can start only after user starts interact with our page.
+ * // This is because of HTML Web Audio API restriction.
+ * document.body.onclick = () => {
+ *   waveFormGraph.render();
+ * }
  * ```
  *
  * @packageDocumentation

@@ -1,21 +1,21 @@
 "use strict";
 exports.__esModule = true;
-exports.AbstractAnalyzer = void 0;
+exports.WaveformGraph = exports.WaveformAnalyzer = exports.FrequencyAnalyzer = exports.AmplitudeAnalyzer = exports.AbstractAnalyzer = void 0;
+/**
+ * This is the entry point for the library.
+ *
+ * It exports all necessary classes.
+ *
+ * @packageDocumentation
+ * @module a-tracktor
+ */
 var abstract_analyzer_1 = require("./lib/abstract-analyzer");
-var amplitude_analyzer_1 = require("./widgets/amplitude-analyzer");
-var frequency_analyzer_1 = require("./widgets/frequency-analyzer");
-var waveform_analyzer_1 = require("./widgets/waveform-analyzer");
-var waveform_graph_1 = require("./widgets/waveform-graph");
-/**
- * Widgets.
- */
-exports["default"] = {
-    AmplitudeAnalyzer: amplitude_analyzer_1.AmplitudeAnalyzer,
-    FrequencyAnalyzer: frequency_analyzer_1.FrequencyAnalyzer,
-    WaveformAnalyzer: waveform_analyzer_1.WaveformAnalyzer,
-    WaveformGraph: waveform_graph_1.WaveformGraph
-};
-/**
- * Abstract analyzer to extend.
- */
 exports.AbstractAnalyzer = abstract_analyzer_1.AbstractAnalyzer;
+var amplitude_analyzer_1 = require("./widgets/amplitude-analyzer");
+exports.AmplitudeAnalyzer = amplitude_analyzer_1.AmplitudeAnalyzer;
+var frequency_analyzer_1 = require("./widgets/frequency-analyzer");
+exports.FrequencyAnalyzer = frequency_analyzer_1.FrequencyAnalyzer;
+var waveform_analyzer_1 = require("./widgets/waveform-analyzer");
+exports.WaveformAnalyzer = waveform_analyzer_1.WaveformAnalyzer;
+var waveform_graph_1 = require("./widgets/waveform-graph");
+exports.WaveformGraph = waveform_graph_1.WaveformGraph;

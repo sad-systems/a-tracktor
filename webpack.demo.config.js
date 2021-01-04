@@ -13,7 +13,8 @@ module.exports = webpackMerge.merge(createWebpackConfig({ contentBase: 'demo' })
         new CopyWebpackPlugin([
             { from: 'src/demo.html', to: 'index.html' },
             { from: 'src/assets/favicon.ico', to: 'favicon.ico' },
-            { from: 'src/assets/sounds', to: 'assets/sounds' }
+            { from: 'src/assets/sounds', to: 'assets/sounds' },
+            { from: 'docs/public', to: 'docs' }
         ]),
     ],
 });
