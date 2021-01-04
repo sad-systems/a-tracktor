@@ -10,7 +10,7 @@
     "build-demo": "cross-env NODE_ENV=production webpack --config webpack.demo.config.js",
     "make-declarations": "tsc -d src/lib.ts --outDir dist",
     "docs": "typedoc",
-    "publish": "cd dist && npm publish --access public",
+    "npm-publish": "cd dist && npm publish --access public",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "MrDigger <mrdigger@mail.ru> (http://sad-systems.ru)",
