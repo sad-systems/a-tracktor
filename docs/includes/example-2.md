@@ -20,6 +20,10 @@ const w = new WaveformAnalyzer();
 const audioElement = w.getAudioSource().audioElement;
 const viewElement = w.getViewElement();
 
+// Customize background
+viewElement.style.backgroundColor = '#800';
+
+// Set audio file
 audioElement.src = 'some-audio-file.mp3';
 
 playBtnElement.onclick = () => {

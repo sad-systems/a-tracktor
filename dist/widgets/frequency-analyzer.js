@@ -14,6 +14,28 @@ var __extends = (this && this.__extends) || (function () {
 })();
 exports.__esModule = true;
 exports.FrequencyAnalyzer = void 0;
+/**
+ * Frequency analyzer widget.
+ *
+ * ![](media://images/freq-widget.jpg)
+ *
+ * Example:
+ * ```
+ * const audioElement = document.getElementById('audio');
+ * const viewElement = document.getElementById('div-analyzer');
+ *
+ * const f = new FrequencyAnalyzer(audioElement, viewElement, { fftSize: 256,  color: '#ffb21d' });
+ *
+ * // We can start only after user starts interact with our page.
+ * // This is because of HTML Web Audio API restriction.
+ * document.body.onclick = () => {
+ *   audioElement.play();
+ *   f.start();
+ * }
+ * ```
+ *
+ * @packageDocumentation
+ */
 var abstract_analyzer_1 = require("../lib/abstract-analyzer");
 /**
  * Frequency analyzer widget.

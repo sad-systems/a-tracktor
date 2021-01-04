@@ -1,9 +1,30 @@
 "use strict";
 exports.__esModule = true;
 exports.WaveformGraph = void 0;
+/**
+ * Waveform graphic draw widget.
+ *
+ * ![](media://images/wavegraph-widget.jpg)
+ *
+ * Example:
+ * ```
+ * const audioElement = document.getElementById('audio');
+ * const viewElement = document.getElementById('div-analyzer');
+ *
+ * const waveFormGraph = new WaveformGraph(audioElement, viewElement, { colorPositive: '#00daff', colorNegative: '#00b6d5' });
+ *
+ * // We can start only after user starts interact with our page.
+ * // This is because of HTML Web Audio API restriction.
+ * document.body.onclick = () => {
+ *   waveFormGraph.render();
+ * }
+ * ```
+ *
+ * @packageDocumentation
+ */
 var defines_1 = require("../lib/defines");
 /**
- * Wave form graphic draw widget.
+ * Waveform graphic draw widget.
  */
 var WaveformGraph = /** @class */ (function () {
     /**

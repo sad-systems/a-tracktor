@@ -2,12 +2,24 @@
  * Options for the WaveformGraph widget.
  */
 export interface IWaveFormGraphOptions {
+    /**
+     * The number of the source channel to analyze.
+     *   - 0 - left channel
+     *   - 1 - right channel
+     *   - undefined - Max of the both channels
+     */
     sourceChannel?: number;
+    /**
+     * Color of the positive values.
+     */
     colorPositive?: string;
+    /**
+     * Color of the negative values.
+     */
     colorNegative?: string;
 }
 /**
- * Wave form graphic draw widget.
+ * Waveform graphic draw widget.
  */
 export declare class WaveformGraph {
     protected audioElement: HTMLMediaElement;

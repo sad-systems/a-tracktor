@@ -16,7 +16,8 @@ Javascript:
 import { FrequencyAnalyzer, WaveformAnalyzer, AmplitudeAnalyzer } from '@sad-systems/a-tracktor';
 
 const playBtnElement = document.getElementById('btn-play');
-
+const audioElement = document.getElementById('audio');
+let f1, w1, a1, a2;
 let init = false;
 
 playBtnElement.onclick = () => {
@@ -26,7 +27,7 @@ playBtnElement.onclick = () => {
         init = true;
 
         // Create single audio source
-        const audioElement = document.getElementById('audio');
+        audioElement = document.getElementById('audio');
         const audioContext = new (window.AudioContext || window.webkitAudioContext)();
         const mediaSource = audioContext.createMediaElementSource(audioElement);
         // Create splitter for two channels audio
@@ -38,11 +39,11 @@ playBtnElement.onclick = () => {
         mediaSource.connect(splitter);
 
         // Create analyzers for the same audio source
-        const f1 = new FrequencyAnalyzer(mediaSource);
-        const w1 = new WaveformAnalyzer(mediaSource);
+        f1 = new FrequencyAnalyzer(mediaSource);
+        w1 = new WaveformAnalyzer(mediaSource);
         // Create two separete analysers for channels
-        const a1 = new AmplitudeAnalyzer(splitter, null, { stereo: false, sourceChannel: 0 });
-        const a2 = new AmplitudeAnalyzer(splitter, null, { stereo: false, sourceChannel: 1 });
+        a1 = new AmplitudeAnalyzer(splitter, null, { stereo: false, sourceChannel: 0 });
+        a2 = new AmplitudeAnalyzer(splitter, null, { stereo: false, sourceChannel: 1 });
 
         // Styling the analyzers views
         const a1view = a1.getViewElement();
