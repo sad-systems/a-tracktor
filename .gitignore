@@ -12,8 +12,8 @@
 # Compiled output:
 /out
 /out-tsc
-#/build
-#/dist
+/build
+/dist
 
 # Compiled demo
 /demo
