@@ -1,19 +1,15 @@
 # Third-party libs (dependencies):
-
 /node_modules
 /vendor
 
 # NextJS (cache):
-
 /.next
 
 # Private project files:
-
 /tmp
 /log
 
 # Compiled output:
-
 /out
 /out-tsc
 #/build
@@ -26,9 +22,16 @@
 /debug
 
 # Docs
-
 /docs/public
 
 # Environment:
-
 .env.*
+
+# Editor directories and files
+.idea
+.vscode
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
