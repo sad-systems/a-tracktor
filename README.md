@@ -1,4 +1,4 @@
-# ![](docs/assets/images/a-tractor.jpg)
+# <img src="docs/assets/images/a-tractor.jpg" width="100%">
 
 The Javascript library of widgets for visualizing audio data on a web page.
 
