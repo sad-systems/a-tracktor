@@ -58,6 +58,10 @@ yarn docs
 yarn build-demo
 ```
 
+### Публикация пакета в `npm` хранилище
+```
+yarn npm-publish
+```
 
 ## Лицензия
 

@@ -1,9 +1,23 @@
 {
   "name": "@sad-systems/a-tracktor",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "The library of widgets for visualizing audio data.",
   "main": "lib.bundle.js",
   "module": "lib.js",
+  "license": "ISC",
+  "author": "MrDigger <mrdigger@mail.ru> (http://sad-systems.ru)",
+  "homepage": "https://github.com/sad-systems/a-tracktor",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/sad-systems/a-tracktor.git"
+  },
+  "keywords": [
+    "web",
+    "audio",
+    "analyzer",
+    "javascript",
+    "widget"
+  ],
   "scripts": {
     "start": "cross-env NODE_ENV=development webpack-dev-server --config webpack.demo.config.js",
     "build": "cross-env NODE_ENV=production webpack && yarn make-declarations && yarn docs",
@@ -12,19 +26,6 @@
     "docs": "typedoc",
     "npm-publish": "cd dist && npm publish --access public",
     "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "author": "MrDigger <mrdigger@mail.ru> (http://sad-systems.ru)",
-  "license": "ISC",
-  "keywords": [
-    "web",
-    "audio",
-    "analyzer",
-    "javascript",
-    "widget"
-  ],
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/sad-systems/a-tracktor.git"
   },
   "devDependencies": {
     "clean-webpack-plugin": "^0.1.19",

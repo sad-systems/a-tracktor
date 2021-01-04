@@ -58,6 +58,11 @@ yarn docs
 yarn build-demo
 ```
 
+### Publish the package on `npm` storage 
+```
+yarn npm-publish
+```
+
 ## License
 
 ISC
