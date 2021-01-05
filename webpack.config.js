@@ -16,6 +16,7 @@ module.exports = webpackMerge.merge(createWebpackConfig({ contentBase: 'dist' })
     plugins: [
         new CopyWebpackPlugin([
             { from: 'package.json', to: 'package.json' },
+            { from: 'README.npm.md', to: 'README.md' },
             { from: 'LICENSE', to: '[name]' },
         ]),
     ],
