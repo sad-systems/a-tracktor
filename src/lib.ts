@@ -11,6 +11,7 @@ import { AmplitudeAnalyzer } from './widgets/amplitude-analyzer';
 import { FrequencyAnalyzer } from './widgets/frequency-analyzer';
 import { WaveformAnalyzer } from './widgets/waveform-analyzer';
 import { WaveformGraph } from './widgets/waveform-graph';
+import { AudioTimePointer } from './widgets/audio-time-pointer';
 
 export {
     AbstractAnalyzer,
@@ -18,4 +19,5 @@ export {
     FrequencyAnalyzer,
     WaveformAnalyzer,
     WaveformGraph,
+    AudioTimePointer,
 };

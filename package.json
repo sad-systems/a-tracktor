@@ -1,6 +1,6 @@
 {
   "name": "@sad-systems/a-tracktor",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "description": "The library of widgets for visualizing audio data.",
   "main": "lib.bundle.js",
   "module": "lib.js",
