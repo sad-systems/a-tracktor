@@ -93,7 +93,7 @@ export abstract class AbstractAnalyzer {
     {
         this.setAudioSource(audioSource);
         this.setViewElement(viewElement);
-        this.setOption(options);
+        this.setOptions(options);
         this.initView();
     }
 
@@ -176,7 +176,7 @@ export abstract class AbstractAnalyzer {
         return div;
     }
 
-    protected setOption(options?: IAbstractAnalyzerOptions) {
+    protected setOptions(options?: IAbstractAnalyzerOptions) {
         options = options || { };
         this.fftSize = options.fftSize || this.getDefaultFftSize();
         this.color = AbstractAnalyzer.normalizeColor(options.color || this.getDefaultColor());

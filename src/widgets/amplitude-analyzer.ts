@@ -18,6 +18,8 @@
  * }
  * ```
  *
+ * See more options at interface definition: {@link IAmplitudeAnalyzerOptions}
+ *
  * @packageDocumentation
  */
 import { AbstractAnalyzer, IAbstractAnalyzerOptions } from '../lib/abstract-analyzer';
@@ -91,8 +93,8 @@ export class AmplitudeAnalyzer extends AbstractAnalyzer {
         return 2048;
     }
 
-    protected setOption(options?: IAmplitudeAnalyzerOptions) {
-        super.setOption(options);
+    protected setOptions(options?: IAmplitudeAnalyzerOptions) {
+        super.setOptions(options);
 
         options = options || {};
 

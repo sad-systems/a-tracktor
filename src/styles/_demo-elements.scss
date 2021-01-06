@@ -1,0 +1,48 @@
+$main-bg-color: #f0f0f0aa;
+
+.caption {
+  padding: 0.5em 1em;
+  background: rgb(4,41,99);
+  background: linear-gradient(90deg, rgba(4,41,99,1) 0%, rgba(0,218,255,1) 35%, rgba(0,0,0,0) 100%);
+  color: #fff;
+}
+
+.analyzer {
+  overflow: hidden;
+  background-color: #2a2a2ac0;
+  width: 100%;
+  border: 1px solid;
+  border-color: #000 #ccc8 #ccc8 #000;
+}
+
+.wavegraph {
+  cursor: pointer;
+}
+
+.time-pointer {
+  position: absolute;
+  width: 20px;
+  height: 10px;
+  top: 0;
+  left: 0;
+  background-color: #00daffaa;
+}
+
+.controls {
+  margin-top: 1em;
+  text-align: center;
+}
+
+.list-group-item {
+  background: $main-bg-color;
+}
+
+.btn-link {
+  color: #03679a;
+}
+
+.btn-primary {
+  // background: linear-gradient(0deg, rgba(4,41,99,1) 0%, rgba(0,218,255,1) 50%, rgba(0,0,0,0) 100%);
+  background: linear-gradient(0deg, #3d629c 0%, #00daff 50%, #3d629c 100%);
+  padding: 1em;
+}

@@ -4,6 +4,7 @@ import { FrequencyAnalyzer } from '../widgets/frequency-analyzer';
 import { WaveformAnalyzer } from '../widgets/waveform-analyzer';
 import { WaveformGraph } from '../widgets/waveform-graph';
 import { AmplitudeAnalyzer } from '../widgets/amplitude-analyzer';
+import { AudioTimePointer } from "../widgets/audio-time-pointer";
 
 /**
  * Demo unit.
@@ -19,7 +20,6 @@ const viewElement1 = document.getElementById('analyzer1');
 const viewElement2 = document.getElementById('analyzer2');
 const viewElement3 = document.getElementById('wavegraph1');
 const viewElement4 = document.getElementById('analyzer3');
-const trackContainerElement = viewElement3;
 
 export const f = new FrequencyAnalyzer(audioElement, viewElement1, { /*fftSize: 32,*/ color: '#ffb21d' });
 export const w = new WaveformAnalyzer(audioElement, viewElement2, { color: '#00ff00' });
@@ -29,6 +29,11 @@ export const waveFormGraph = new WaveformGraph(audioElement, viewElement3,
 
 waveFormGraph.render();
 
+// Graphical cursor
+
+const audioTimePointer = new AudioTimePointer(audioElement, viewElement3,
+    { mode: 'bar', pointerStyle: { background: '#0f0a', width: '2px' }, /*pointerClass: 'time-pointer'*/ });
+
 // Analyzers resizer
 
 function resize() {
@@ -36,6 +41,7 @@ function resize() {
     w.resize();
     a.resize();
     waveFormGraph.resize();
+    audioTimePointer.resize();
 }
 
 window.addEventListener('resize', _.debounce(resize, 250));
@@ -69,34 +75,9 @@ export const stop = () => {
     audioElement.currentTime = 0;
 }
 
-// Graphical cursor
-
-const cursor = document.createElement('div');
-cursor.style.backgroundColor = '#fff7';
-cursor.style.width = '1px';
-cursor.style.height = trackContainerElement.offsetHeight;
-cursor.style.position = 'absolute';
-cursor.style.top = 0;
-cursor.style.left = 0;
-
-trackContainerElement.append(cursor);
-
 playBtnElement.onclick = () => { audioElement.paused ? audioElement.play() : audioElement.pause(); }
 stopBtnElement.onclick = () => { audioElement.pause(); stop(); }
-
-trackContainerElement.onclick = (event) => {
-    const duration = audioElement.duration;
-    const width = trackContainerElement.offsetWidth;
-    const pos = duration * event.offsetX / width;
-
-    audioElement.currentTime = pos;
-}
 
 audioElement.onplay = play;
 audioElement.onpause = pause;
 audioElement.onended = stop;
-audioElement.ontimeupdate = () => {
-    const pos =  audioElement.currentTime * trackContainerElement.offsetWidth / audioElement.duration;
-
-    cursor.style.left = pos;
-}

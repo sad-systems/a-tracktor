@@ -16,6 +16,7 @@
  *   waveFormGraph.render();
  * }
  * ```
+ * See more options at interface definition: {@link IWaveFormGraphOptions}
  *
  * @packageDocumentation
  */
@@ -72,11 +73,11 @@ export class WaveformGraph {
         protected options?: any,
     )
     {
-        this.setOption(options);
+        this.setOptions(options);
         this.init();
     }
 
-    protected setOption(options?: IWaveFormGraphOptions) {
+    protected setOptions(options?: IWaveFormGraphOptions) {
         options = options || {};
 
         this.colorPositive = options.colorPositive || '#0f0';

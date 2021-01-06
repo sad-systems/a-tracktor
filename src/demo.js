@@ -1,4 +1,4 @@
-import './styles/styles.scss';
+import './styles/main.scss';
 
 require('./demo/input');
 

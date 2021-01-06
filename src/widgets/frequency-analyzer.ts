@@ -18,6 +18,8 @@
  * }
  * ```
  *
+ * See more options at interface definition: {@link IAbstractAnalyzerOptions}
+ *
  * @packageDocumentation
  */
 import { AbstractAnalyzer } from '../lib/abstract-analyzer';
