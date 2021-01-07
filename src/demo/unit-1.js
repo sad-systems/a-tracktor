@@ -32,7 +32,7 @@ waveFormGraph.render();
 // Graphical cursor
 
 const audioTimePointer = new AudioTimePointer(audioElement, viewElement3,
-    { mode: 'bar', pointerStyle: { background: '#0f0a', width: '2px' }, /*pointerClass: 'time-pointer'*/ });
+    { mode: 'line', pointerStyle: { background: '#0f0a', width: '2px' }, /*pointerClass: 'time-pointer'*/ });
 
 // Analyzers resizer
 
