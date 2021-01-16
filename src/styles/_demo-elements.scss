@@ -5,6 +5,8 @@ $main-bg-color: #f0f0f0aa;
   background: rgb(4,41,99);
   background: linear-gradient(90deg, rgba(4,41,99,1) 0%, rgba(0,218,255,1) 35%, rgba(0,0,0,0) 100%);
   color: #fff;
+  max-height: 4em;
+  overflow: hidden;
 }
 
 .analyzer {

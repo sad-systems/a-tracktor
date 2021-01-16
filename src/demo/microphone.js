@@ -5,6 +5,7 @@
 import { FrequencyAnalyzer } from '../widgets/frequency-analyzer';
 import { WaveformAnalyzer } from '../widgets/waveform-analyzer';
 import { AmplitudeAnalyzer } from '../widgets/amplitude-analyzer';
+import * as _ from "lodash";
 
 navigator.getUserMedia = (navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia);
 
@@ -19,8 +20,6 @@ let micStream;
 let f1 = new FrequencyAnalyzer(null, viewElement1);
 let w1 = new WaveformAnalyzer(null, viewElement2);
 let a1 = new AmplitudeAnalyzer(null, viewElement3);
-
-buttonMic.onclick = () => (!micStream || !micStream.active ? startMicSession() : stopMicSession());
 
 /**
  * Starts analyze the microphone
@@ -78,3 +77,14 @@ const stopAnalyzers = () => {
     w1 && w1.stop();
     a1 && a1.stop();
 }
+
+function resize() {
+    f1 && f1.resize();
+    w1 && w1.resize();
+    a1 && a1.resize();
+}
+
+// RUN
+
+buttonMic.onclick = () => (!micStream || !micStream.active ? startMicSession() : stopMicSession());
+window.addEventListener('resize', _.debounce(resize, 250));
