@@ -28,6 +28,11 @@
           </ul>
         </div>
 
+        <div class="col-12"></div>
+
+      </div>
+      <div class="row gx-2 gy-2">
+
         <div class="col-6">
           <div class="caption">Frequency analyzer</div>
           <div class="analyzer" id="analyzer1"></div>
@@ -46,12 +51,39 @@
           <div class="analyzer" id="analyzer3"></div>
         </div>
 
-      </div>
-    </div>
+        <div class="col-12 controls">
+          <button id="play" class="btn btn-primary">Play/Pause</button>
+          <button id="stop" class="btn btn-primary">Stop</button>
+        </div>
 
-    <div class="container-fluid controls">
-      <button id="play" class="btn btn-primary">Play/Pause</button>
-      <button id="stop" class="btn btn-primary">Stop</button>
+        <div class="col-12"></div>
+
+      </div>
+      <div class="row gx-2 gy-2">
+
+        <div class="col-5">
+          <div class="caption">Mic Frequency analyzer</div>
+          <div class="analyzer" id="mic-analyzer1"></div>
+        </div>
+        <div class="col-6">
+          <div class="caption ">Mic Waveform analyzer</div>
+          <div class="analyzer" id="mic-analyzer2"></div>
+        </div>
+
+        <div class="col-1" title="Mic Amplitude analyzer">
+          <div class="caption text-truncate">Mic Amplitude analyzer</div>
+          <div class="analyzer" id="mic-analyzer3"></div>
+        </div>
+
+        <div class="col-12 controls">
+          <button id="button-mic" class="btn btn-primary">Mic On/Off</button>
+          <i id="icon-mic" class="microphone off media-controls-icon-volume-mute"></i>
+        </div>
+
+        <div class="col-12"></div>
+
+      </div>
+
     </div>
 
     <footer>

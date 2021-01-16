@@ -26,6 +26,8 @@ yarn add @sad-systems/a-tracktor
 
 [[include:example-4.md]]
 
+[[include:example-5.md]]
+
 ## Credits
 
   MrDigger © [SAD-Systems](http://sad-systems.ru), 2021

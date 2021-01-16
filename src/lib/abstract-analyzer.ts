@@ -81,7 +81,8 @@ export abstract class AbstractAnalyzer {
     /**
      * Constructor.
      *
-     * @param audioSource Input HTML element with source audio (HTML audio tag) or structure of IAudioSource.
+     * @param audioSource Input HTML element with source audio (HTML audio tag) or the instance of
+     *                    [MediaElementAudioSourceNode](https://developer.mozilla.org/en-US/docs/Web/API/MediaElementAudioSourceNode).
      * @param viewElement The HTML element to render the widget. Will be auto created if it is undefined or null.
      * @param options     Analyzer options.
      */
@@ -154,6 +155,17 @@ export abstract class AbstractAnalyzer {
      */
     getViewElement(): HTMLElement {
         return this.viewElement;
+    }
+
+    /**
+     * Changes the current media source.
+     *
+     * @param audioSource Input HTML element with source audio (HTML audio tag) or the instance of
+     *                    [MediaElementAudioSourceNode](https://developer.mozilla.org/en-US/docs/Web/API/MediaElementAudioSourceNode).
+     */
+    changeAudioSource(audioSource?: HTMLMediaElement | MediaElementAudioSourceNode | null) {
+        this.setAudioSource(audioSource);
+        this.isAudioContextInitialized = false;
     }
 
     protected getDefaultFftSize(): number {

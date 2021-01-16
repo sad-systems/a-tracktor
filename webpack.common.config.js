@@ -68,6 +68,12 @@ module.exports = (props) => {
                     ]
                 },
                 {
+                    test: /\.(woff|woff2|eot|ttf|otf)$/i,
+                    use: [
+                        'file-loader'
+                    ]
+                },
+                {
                     test: /\.ts?$/,
                     use: 'ts-loader',
                     exclude: /node_modules/
