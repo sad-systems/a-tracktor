@@ -26,6 +26,13 @@ buttonMic.onclick = () => (!micStream || !micStream.active ? startMicSession() :
  * Starts analyze the microphone
  */
 const startMicSession = () => {
+
+    if (!navigator.getUserMedia) {
+        if (confirm('Microphone usage is denied on HTTP protocol, so lets try to switch in HTTPS ?')) {
+            location.replace(location.href.replace(/^http:/, 'https:'));
+        }
+    }
+
     navigator.getUserMedia(
         { audio: true, video: false },
         (stream) => {
