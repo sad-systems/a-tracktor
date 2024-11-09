@@ -16,11 +16,11 @@ Javascript библиотека виджетов для визуализации
 ## Документация
 
 Подробную документацию с примерами использования и установки смотрите
-[здесь](http://examples.sad-systems.ru/a-tracktor/docs/).
+[здесь](https://examples.sadspace.ru/a-tracktor/docs/).
 
 ## Живая демонстрация
 
-Посмотрите как это работает на [живом примере](http://examples.sad-systems.ru/a-tracktor)
+Посмотрите как это работает на [живом примере](https://examples.sadspace.ru/a-tracktor)
 
 ## Разработка
  
@@ -69,4 +69,4 @@ ISC
 
 ## Автор
 
-  MrDigger © [SAD-Systems](http://sad-systems.ru), 2021
+  MrDigger © [SAD-Systems](https://sad-systems.github.io), 2024

@@ -9,7 +9,7 @@ All the source code you can find on the
 
 ## Live demo
 
-Try the [live demo](http://examples.sad-systems.ru/a-tracktor)
+Try the [live demo](https://examples.sadspace.ru/a-tracktor)
 
 ## Installation
 ```
@@ -30,4 +30,4 @@ yarn add @sad-systems/a-tracktor
 
 ## Credits
 
-  MrDigger © [SAD-Systems](http://sad-systems.ru), 2021
+  MrDigger © [SAD-Systems](https://sad-systems.github.io), 2024
