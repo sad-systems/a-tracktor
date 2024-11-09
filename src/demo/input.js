@@ -1,4 +1,4 @@
-import { stop, waveFormGraph } from './unit-1';
+import { stop, waveFormGraph, waveFormGraph2 } from './unit-1';
 
 /**
  * Input of audio files.
@@ -20,6 +20,21 @@ inputElement.onchange = (event) => {
   fileReader.readAsDataURL(file);
   fileReader.onloadend = () => {
     audioElement.src = fileReader.result;
-    waveFormGraph.render();
+
+    // Test DataSampling
+    waveFormGraph.render().then(() => {
+      const data = waveFormGraph.getDataSampling(2000);
+
+      waveFormGraph2.setDataSampling(data).render();
+
+      //console.log('data base64:', btoa(data));
+      //console.log('data Float base64:', btoa(new Float32Array(data)));
+      //console.log('data string:', data.toString());
+
+      // Test creating audio buffer.
+      //const ab = new AudioBuffer({ length: data.length, numberOfChannels: 1, sampleRate: data.length });
+      //ab.copyToChannel(new Float32Array(data), 0);
+      //waveFormGraph2.setAudioBuffer(ab).render();
+    });
   };
 };

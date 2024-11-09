@@ -41,6 +41,10 @@ export interface IWaveFormGraphOptions {
    * Color of the negative values.
    */
   colorNegative?: string;
+  /**
+   * Audio buffer to draw predefined waveform graphic.
+   */
+  audioBuffer?: AudioBuffer;
 }
 
 /**
@@ -51,13 +55,15 @@ export class WaveformGraph {
   protected canvasContext: CanvasRenderingContext2D;
   protected width: number;
   protected height: number;
-  protected audioContext: AudioContext;
-  protected isAudioContextInitialized = false;
-  protected decodedBuffer: AudioBuffer;
+  protected audioContext?: AudioContext;
+  protected decodedBuffer?: AudioBuffer;
+  protected loadedAudioSource = '';
 
   protected sourceChannel?: number;
   protected colorPositive: string;
   protected colorNegative: string;
+
+  protected dataSampling?: number[];
 
   /**
    * Constructor.
@@ -81,6 +87,7 @@ export class WaveformGraph {
     this.colorPositive = options.colorPositive || '#0f0';
     this.colorNegative = options.colorNegative || '#0a0';
     this.sourceChannel = options.sourceChannel;
+    this.decodedBuffer = options.audioBuffer;
   }
 
   protected init() {
@@ -91,11 +98,12 @@ export class WaveformGraph {
     this.reset();
   }
 
-  protected initAudio() {
-    if (this.isAudioContextInitialized) return;
+  protected getAudioContext(): AudioContext {
+    if (!this.audioContext) {
+      this.audioContext = new (window.AudioContext || (window as any).webkitAudioContext)(); // Аудио контекст
+    }
 
-    this.audioContext = new (window.AudioContext || (window as any).webkitAudioContext)(); // Аудио контекст
-    this.isAudioContextInitialized = true;
+    return this.audioContext;
   }
 
   /**
@@ -110,22 +118,101 @@ export class WaveformGraph {
    */
   resize() {
     this.setSize();
-    this.createWaveForm(this.decodedBuffer);
+    this.createWaveForm();
+  }
+
+  /**
+   * Returns the current audio buffer.
+   */
+  getAudioBuffer(): AudioBuffer | undefined {
+    return this.decodedBuffer;
+  }
+
+  /**
+   * Sets the current audio buffer.
+   *
+   * @param value Instance of the Audio buffer.
+   * @see https://developer.mozilla.org/ru/docs/Web/API/AudioBuffer
+   */
+  setAudioBuffer(value: AudioBuffer) {
+    this.decodedBuffer = value;
+    this.dataSampling = undefined; // Reset dataSampling.
+
+    return this;
+  }
+
+  /**
+   * Returns an array of a specified number of data samples, taken at regular intervals.
+   * The minimum amount of data to construct a wave form graphic of a given width (defined by number of samples).
+   *
+   * @param sampleCount       Number of samples.
+   * @param sourceChannel     Optional source channel (0 - Left or 1 - Right).
+   *                          If omitted the max of both channels for stereo audio will be taken.
+   * @param sourceAudioBuffer Optional instance of a source audio buffer.
+   *                          If omitted the current audio buffer will be taken.
+   */
+  getDataSampling(
+    sampleCount: number,
+    sourceChannel?: number,
+    sourceAudioBuffer?: AudioBuffer,
+  ): number[] {
+    const audioBuffer = sourceAudioBuffer ?? this.getAudioBuffer();
+    const primaryData = audioBuffer?.getChannelData(sourceChannel ?? 0) ?? new Float32Array(); // Primary channel data.
+    const secondaryData =
+      sourceChannel === undefined && audioBuffer?.numberOfChannels > 1
+        ? audioBuffer.getChannelData(1)
+        : undefined;
+
+    return this.filterData(sampleCount, primaryData as any, secondaryData as any);
+  }
+
+  /**
+   * Sets manually prepared audio data to draw the wave graphic.
+   *
+   * @param data Channel data of AudioBuffer or the data obtained from `getDataSampling` method.
+   * @see https://developer.mozilla.org/ru/docs/Web/API/AudioBuffer
+   */
+  setDataSampling(data?: number[]) {
+    this.dataSampling = data;
+
+    return this;
+  }
+
+  /**
+   * Loads audio from source URL and sets current audio buffer.
+   *
+   * @param src Source URL of audio.
+   *
+   * @returns Promise that resolves the current audio buffer.
+   */
+  async loadAudio(src?: string): Promise<AudioBuffer> {
+    const source = src ?? this.audioElement.src;
+
+    return fetch(source)
+      .then((response) => response.arrayBuffer())
+      .then((arrayBuffer) => this.getAudioContext().decodeAudioData(arrayBuffer))
+      .then((decodedBuffer) => {
+        this.loadedAudioSource = source;
+        this.dataSampling = undefined;
+
+        return (this.decodedBuffer = decodedBuffer);
+      });
   }
 
   /**
    * Draws waveform graphic.
+   *
+   * @returns Promise that resolves an array of data samples used to construct a wave form graphic.
    */
-  render() {
-    this.initAudio();
-
-    fetch(this.audioElement.src)
-      .then((response) => response.arrayBuffer())
-      .then((arrayBuffer) => this.audioContext.decodeAudioData(arrayBuffer))
-      .then((decodedBuffer) => {
-        this.decodedBuffer = decodedBuffer;
-        this.createWaveForm(decodedBuffer);
-      });
+  async render(): Promise<number[]> {
+    if (
+      (this.decodedBuffer || this.dataSampling) &&
+      this.audioElement.src == this.loadedAudioSource
+    ) {
+      return this.createWaveForm();
+    } else {
+      return this.loadAudio(this.audioElement.src).then((decodedBuffer) => this.createWaveForm());
+    }
   }
 
   protected setSize() {
@@ -135,28 +222,28 @@ export class WaveformGraph {
     this.canvasElement.height = this.height;
   }
 
-  protected filterData(audioBuffer: AudioBuffer): number[] {
-    const primaryData = audioBuffer.getChannelData(this.sourceChannel || 0); // primary channel data
-    const secondaryData =
-      this.sourceChannel === undefined && audioBuffer.numberOfChannels > 1
-        ? audioBuffer.getChannelData(1)
-        : undefined;
-    const samples = this.width;
-    const blockSize = Math.floor(primaryData.length / samples); // the number of samples in each subdivision
+  protected filterData(samples: number, primaryData: number[], secondaryData?: number[]): number[] {
+    const blockSize = primaryData.length / samples; // The number of samples in each subdivision.
     const filteredData = [];
     for (let i = 0; i < samples; i++) {
-      let blockStart = blockSize * i; // the location of the first sample in the block
+      let blockStart = blockSize * i; // The location of the first sample in the block.
       let sum = 0;
+      let count = 0;
       for (let j = 0; j < blockSize; j++) {
-        let channelValue = Math.abs(primaryData[blockStart + j]);
+        const index = Math.round(blockStart) + j;
+        if (primaryData[index] === undefined) break;
+
+        let channelValue = Math.abs(primaryData[index]);
+        count++;
+
         // Get the max of both channels for stereo audio.
         if (secondaryData) {
-          channelValue = Math.max(channelValue, Math.abs(secondaryData[blockStart + j]));
+          channelValue = Math.max(channelValue, Math.abs(secondaryData[index]));
         }
 
-        sum += channelValue; // find the sum of all the samples in the block
+        sum += channelValue; // Find the sum of all the samples in the block.
       }
-      filteredData.push(sum / blockSize); // divide the sum by the block size to get the average
+      count && filteredData.push(sum / count); // divide the sum by the block size to get the average.
     }
 
     return filteredData;
@@ -168,23 +255,37 @@ export class WaveformGraph {
     this.canvasContext.fillRect(x, this.height / 2, width, height);
   }
 
-  protected createWaveForm(decodedBuffer: AudioBuffer) {
+  protected drawWaveForm(data: number[], maxWidth: number, maxHeight: number) {
     this.reset();
 
-    const data = this.filterData(decodedBuffer);
-    const maxHeight = this.height;
+    // Draw the segments
+    const segmentWidth = maxWidth / data.length;
 
-    // draw the segments
-    const width = this.width / data.length;
     for (let i = 0; i < data.length; i++) {
-      const x = width * i;
-      let height = data[i] * maxHeight;
-      if (height < 0) {
-        height = 0;
-      } else if (height > maxHeight) {
-        height = maxHeight;
+      const x = segmentWidth * i;
+      let segmentHeight = data[i] * maxHeight;
+      if (segmentHeight < 0) {
+        segmentHeight = 0;
+      } else if (segmentHeight > maxHeight) {
+        segmentHeight = maxHeight;
       }
-      this.drawSegment(x, height, width, !!((i + 1) % 2));
+      this.drawSegment(x, segmentHeight, segmentWidth, !!((i + 1) % 2));
     }
+  }
+
+  protected createWaveForm(): number[] {
+    let data = [];
+
+    if (this.dataSampling) {
+      // Create data from data sampling.
+      data = this.filterData(this.width, this.dataSampling);
+    } else {
+      // Create data from current audio buffer.
+      data = this.getDataSampling(this.width);
+    }
+
+    this.drawWaveForm(data, this.width, this.height);
+
+    return data;
   }
 }

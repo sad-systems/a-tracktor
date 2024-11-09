@@ -20,6 +20,7 @@ const viewElement1 = document.getElementById('analyzer1');
 const viewElement2 = document.getElementById('analyzer2');
 const viewElement3 = document.getElementById('wavegraph1');
 const viewElement4 = document.getElementById('analyzer3');
+const viewElement5 = document.getElementById('wavegraph2');
 
 export const f = new FrequencyAnalyzer(audioElement, viewElement1, {
   /*fftSize: 32,*/ color: '#ffb21d',
@@ -31,6 +32,10 @@ export const a = new AmplitudeAnalyzer(audioElement, viewElement4, {
   colorClip: '#f00',
 });
 export const waveFormGraph = new WaveformGraph(audioElement, viewElement3, {
+  colorPositive: '#00daff',
+  colorNegative: '#00b6d5',
+});
+export const waveFormGraph2 = new WaveformGraph(new Audio(), viewElement5, {
   colorPositive: '#00daff',
   colorNegative: '#00b6d5',
 });
@@ -54,6 +59,7 @@ function resize() {
   w.resize();
   a.resize();
   waveFormGraph.resize();
+  waveFormGraph2.resize();
   audioTimePointer.resize();
 }
 
