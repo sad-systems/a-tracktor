@@ -5,7 +5,7 @@
   "main": "lib.bundle.js",
   "module": "lib.js",
   "license": "ISC",
-  "author": "MrDigger <mrdigger@mail.ru> (https://sadspace.ru)",
+  "author": "MrDigger <mrdigger@mail.ru> (https://sad-systems.github.io)",
   "homepage": "https://github.com/sad-systems/a-tracktor",
   "repository": {
     "type": "git",
