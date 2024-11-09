@@ -2,7 +2,7 @@
  * Demo page
  */
 body {
-  background-image: url("../../docs/assets/images/bg.jpg");
+  background-image: url('../../docs/assets/images/bg.jpg');
   background-size: cover;
   background-position: center;
 }
@@ -11,12 +11,12 @@ body {
   position: absolute;
   width: 90px;
   height: 30px;
-  background-image: url("../../docs/assets/images/sad-logo.png");
+  background-image: url('../../docs/assets/images/sad-logo.png');
   background-repeat: no-repeat;
   left: 1.5rem;
-  top: .75rem;
+  top: 0.75rem;
   z-index: -1;
-  opacity: .25;
+  opacity: 0.25;
 }
 
 .docs {
@@ -27,8 +27,8 @@ body {
   width: 1em;
   height: 1em;
   right: 1.5rem;
-  top: .75rem;
-  background-image: url("../../docs/assets/images/book.png");
+  top: 0.75rem;
+  background-image: url('../../docs/assets/images/book.png');
   background-repeat: no-repeat;
   background-size: cover;
 }
@@ -54,7 +54,7 @@ footer {
 
 .github-link {
   padding-left: 1.5em;
-  background-image: url("../../docs/assets/images/github.svg");
+  background-image: url('../../docs/assets/images/github.svg');
   background-repeat: no-repeat;
   background-position: left center;
 }
@@ -62,6 +62,7 @@ footer {
 h1 {
   text-align: center;
   color: #c3c3c3cc;
-  text-shadow: #fff -1px -1px 0,
-  #333 1px 1px 0;
+  text-shadow:
+    #fff -1px -1px 0,
+    #333 1px 1px 0;
 }

@@ -1,7 +1,8 @@
 @font-face {
   font-family: 'media-controls';
-  src:  url('fonts/media-controls.eot?8edijw');
-  src:  url('fonts/media-controls.eot?8edijw#iefix') format('embedded-opentype'),
+  src: url('fonts/media-controls.eot?8edijw');
+  src:
+    url('fonts/media-controls.eot?8edijw#iefix') format('embedded-opentype'),
     url('fonts/media-controls.ttf?8edijw') format('truetype'),
     url('fonts/media-controls.woff?8edijw') format('woff'),
     url('fonts/media-controls.svg?8edijw#media-controls') format('svg');
@@ -10,7 +11,8 @@
   font-display: block;
 }
 
-[class^="media-controls-icon-"], [class*=" media-controls-icon-"] {
+[class^='media-controls-icon-'],
+[class*=' media-controls-icon-'] {
   /* use !important to prevent issues with browser extensions that change fonts */
   font-family: 'media-controls' !important;
   speak: never;
@@ -19,14 +21,14 @@
   font-variant: normal;
   text-transform: none;
   line-height: 1;
-  
+
   /* Enable Ligatures ================ */
   letter-spacing: 0;
-  -webkit-font-feature-settings: "liga";
-  -moz-font-feature-settings: "liga=1";
-  -moz-font-feature-settings: "liga";
-  -ms-font-feature-settings: "liga" 1;
-  font-feature-settings: "liga";
+  -webkit-font-feature-settings: 'liga';
+  -moz-font-feature-settings: 'liga=1';
+  -moz-font-feature-settings: 'liga';
+  -ms-font-feature-settings: 'liga' 1;
+  font-feature-settings: 'liga';
   -webkit-font-variant-ligatures: discretionary-ligatures;
   font-variant-ligatures: discretionary-ligatures;
 
@@ -36,53 +38,53 @@
 }
 
 .media-controls-icon-play:before {
-  content: "\ea1c";
+  content: '\ea1c';
 }
 .media-controls-icon-pause:before {
-  content: "\ea1d";
+  content: '\ea1d';
 }
 .media-controls-icon-stop:before {
-  content: "\ea1e";
+  content: '\ea1e';
 }
 .media-controls-icon-backward:before {
-  content: "\ea1f";
+  content: '\ea1f';
 }
 .media-controls-icon-forward:before {
-  content: "\ea20";
+  content: '\ea20';
 }
 .media-controls-icon-first:before {
-  content: "\ea21";
+  content: '\ea21';
 }
 .media-controls-icon-last:before {
-  content: "\ea22";
+  content: '\ea22';
 }
 .media-controls-icon-previous:before {
-  content: "\ea23";
+  content: '\ea23';
 }
 .media-controls-icon-next:before {
-  content: "\ea24";
+  content: '\ea24';
 }
 .media-controls-icon-eject:before {
-  content: "\ea25";
+  content: '\ea25';
 }
 .media-controls-icon-volume-high:before {
-  content: "\ea26";
+  content: '\ea26';
 }
 .media-controls-icon-volume-medium:before {
-  content: "\ea27";
+  content: '\ea27';
 }
 .media-controls-icon-volume-low:before {
-  content: "\ea28";
+  content: '\ea28';
 }
 .media-controls-icon-volume-mute:before {
-  content: "\ea29";
+  content: '\ea29';
 }
 .media-controls-icon-volume-mute-x:before {
-  content: "\ea2a";
+  content: '\ea2a';
 }
 .media-controls-icon-volume-increase:before {
-  content: "\ea2b";
+  content: '\ea2b';
 }
 .media-controls-icon-volume-decrease:before {
-  content: "\ea2c";
+  content: '\ea2c';
 }
