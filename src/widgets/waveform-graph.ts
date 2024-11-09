@@ -3,7 +3,7 @@
  *
  * ![](media://images/wavegraph-widget.jpg)
  *
- * Example:
+ * Example 1: Just draw the waveform.
  * ```
  * const audioElement = document.getElementById('audio');
  * const viewElement = document.getElementById('div-analyzer');
@@ -16,6 +16,33 @@
  *   waveFormGraph.render();
  * }
  * ```
+ *
+ * Example 2: Draw the waveform and set the data to the other graph.
+ * ```
+ * const audioElement = document.getElementById('audio');
+ * const viewElement1 = document.getElementById('div-analyzer-1');
+ * const viewElement2 = document.getElementById('div-analyzer-2');
+ *
+ * const waveFormGraph1 = new WaveformGraph(audioElement, viewElement1, { colorPositive: '#00daff', colorNegative: '#00b6d5' });
+ * const waveFormGraph2 = new WaveformGraph(new Audio(), viewElement2, { colorPositive: '#00daff', colorNegative: '#00b6d5' });
+ *
+ * // We can start only after user starts interact with our page.
+ * // This is because of HTML Web Audio API restriction.
+ * document.body.onclick = () => {
+ *   // Draw the first graph.
+ *   waveFormGraph1.render().then(() => {
+ *     // Get a simplified data samples for drawing.
+ *     // 2000 values are more than enough to draw fast and correct on full HD screen.
+ *     const data = waveFormGraph1.getDataSampling(2000);
+ *
+ *     // Set obtained the data to the new waveform graph and draw it.
+ *     waveFormGraph2.setDataSampling(data).render();
+ *
+ *     // Obtained "data" - You can save and use for fast render.
+ *   });
+ * }
+ * ```
+ *
  * See more options at interface definition: {@link IWaveFormGraphOptions}
  *
  * @packageDocumentation
@@ -75,7 +102,7 @@ export class WaveformGraph {
   constructor(
     protected audioElement: HTMLMediaElement,
     protected viewElement: HTMLElement,
-    protected options?: any,
+    protected options?: IWaveFormGraphOptions,
   ) {
     this.setOptions(options);
     this.init();

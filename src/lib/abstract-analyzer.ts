@@ -75,6 +75,9 @@ export abstract class AbstractAnalyzer {
   protected requestAniFrameID: number;
   protected isAudioContextInitialized = false;
 
+  /**
+   * The list of audio sources.
+   */
   protected static audioSources: IAudioSource[] = [];
 
   // Options
@@ -143,6 +146,8 @@ export abstract class AbstractAnalyzer {
 
   /**
    * Returns the audio source structure for this instance.
+   *
+   * @returns The audio source structure.
    */
   getAudioSource(): IAudioSource {
     return {
