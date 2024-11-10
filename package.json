@@ -25,7 +25,7 @@
     "build-demo": "cross-env NODE_ENV=production webpack --config webpack.demo.config.js",
     "make-declarations": "tsc -d src/lib.ts --outDir dist",
     "docs": "typedoc",
-    "npm-publish": "cd dist && npm publish --access public",
+    "npm-publish": "cd dist && npm publish --access public --token",
     "test": "echo \"Error: no test specified\" && exit 1",
     "format": "yarn prettier --write src/",
     "format-check": "yarn prettier --check src/"
