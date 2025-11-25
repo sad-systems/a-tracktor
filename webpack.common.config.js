@@ -31,7 +31,7 @@ module.exports = (props) => {
     devtool: mode === 'development' ? 'inline-source-map' : false,
     devServer: {
       static: contentBase,
-      port: 5001,
+      port: 5000,
     },
     plugins,
     output: {

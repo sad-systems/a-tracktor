@@ -1,10 +1,10 @@
 import * as _ from 'lodash';
 
-import { FrequencyAnalyzer } from '../widgets/frequency-analyzer';
-import { WaveformAnalyzer } from '../widgets/waveform-analyzer';
-import { WaveformGraph } from '../widgets/waveform-graph';
-import { AmplitudeAnalyzer } from '../widgets/amplitude-analyzer';
-import { AudioTimePointer } from '../widgets/audio-time-pointer';
+import { FrequencyAnalyzer } from '../widgets/analyzers/frequency-analyzer';
+import { WaveformAnalyzer } from '../widgets/analyzers/waveform-analyzer';
+import { WaveformGraph } from '../widgets/analyzers/waveform-graph';
+import { AmplitudeAnalyzer } from '../widgets/analyzers/amplitude-analyzer';
+import { MediaTimePointer } from '../widgets/media-player-components/media-time-pointer';
 
 /**
  * Demo unit.
@@ -44,7 +44,7 @@ waveFormGraph.render();
 
 // Graphical cursor
 
-const audioTimePointer = new AudioTimePointer(audioElement, viewElement3, {
+const audioTimePointer = new MediaTimePointer(audioElement, viewElement3, {
   mode: 'line',
   pointerStyle: {
     background: '#0f0a',

@@ -1,6 +1,7 @@
 # A-tracktor
 
-The Javascript library of widgets for visualizing audio data on a web page.
+The Javascript library contains a set of widgets to visualize audio data  
+and add a customizable media player to a web page.
 
 ## Documentation
 
@@ -22,4 +23,4 @@ ISC
 
 ## Credits
 
-  MrDigger © [SAD-Systems](https://sad-systems.github.io), 2024
+  MrDigger © [SAD-Systems](https://sad-systems.github.io), 2025

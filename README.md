@@ -1,8 +1,9 @@
-# <img src="docs/assets/images/a-tractor.jpg" width="100%">
+# <img src="src/docs/assets/images/a-tracktor-2.png" width="100%">
 
-The Javascript library of widgets for visualizing audio data on a web page.
+The Javascript library contains a set of widgets to visualize audio data  
+and add a customizable media player to a web page.
 
-> Сменить язык: [![Русский](docs/assets/images/ru.gif)](README.ru.md) [![English](docs/assets/images/en.gif)](README.md)
+> Сменить язык: [![Русский](src/docs/assets/images/ru.gif)](README.ru.md) [![English](src/docs/assets/images/en.gif)](README.md)
 
 ## Used technologies
 
@@ -55,7 +56,7 @@ yarn docs
 
 ### Build the demo project
 ```
-yarn build-demo
+yarn build:demo
 ```
 
 ### Publish the package on `npm` storage 
@@ -69,4 +70,4 @@ ISC
 
 ## Credits
 
-  MrDigger © [SAD-Systems](https://sad-systems.github.io), 2024
+  MrDigger © [SAD-Systems](https://sad-systems.github.io), 2025

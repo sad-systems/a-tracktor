@@ -22,7 +22,8 @@
 /debug
 
 # Docs
-/docs/public
+/docs
+/_docs
 
 # Environment:
 .env.*

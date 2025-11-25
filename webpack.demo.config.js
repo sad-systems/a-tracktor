@@ -7,12 +7,12 @@ const createWebpackConfig = require('./webpack.common.config');
  */
 module.exports = webpackMerge.merge(createWebpackConfig({ contentBase: 'demo' }), {
   entry: {
-    demo: './src/demo.js',
+    demo: './src/demo/demo.js',
   },
   plugins: [
     new CopyWebpackPlugin([
-      { from: 'src/demo.html', to: 'index.html' },
-      { from: 'docs/assets/images/favicon.ico', to: 'favicon.ico' },
+      { from: 'src/demo/demo.html', to: 'index.html' },
+      { from: 'src/docs/assets/images/favicon.ico', to: 'favicon.ico' },
       { from: 'src/assets/sounds', to: 'assets/sounds' },
       { from: 'docs/public', to: 'docs' },
     ]),

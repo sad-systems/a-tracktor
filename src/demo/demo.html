@@ -1,0 +1,137 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+    />
+    <title>A-Tracktor demo</title>
+    <style></style>
+    <link rel="icon" type="image/x-icon" href="favicon.ico" />
+    <!-- Bootstrap CSS -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1"
+      crossorigin="anonymous"
+    />
+  </head>
+  <body class="container-fluid">
+    <div class="logo"></div>
+    <a class="docs" href="../docs" title="Documentation"></a>
+    <h1>A-Tracktor demo</h1>
+    <audio id="audio" src="../assets/sounds/test-sound-40-20000.mp3"></audio>
+    <audio id="audio2" src="../assets/sounds/test-stereo.mp3"></audio>
+
+    <div class="container-fluid">
+      <div class="row gx-2 gy-2">
+        <div class="col-12">
+          <div class="caption">Source</div>
+          <ul class="list-group">
+            <li class="list-group-item">
+              <button
+                type="button"
+                class="btn btn-link js-audio"
+                data-file="assets/sounds/test-sound-40-20000.mp3"
+              >
+                Test pattern: 40 - 20 000 Hz
+              </button>
+            </li>
+            <li class="list-group-item">
+              <button
+                type="button"
+                class="btn btn-link js-audio"
+                data-file="assets/sounds/test-stereo.mp3"
+              >
+                Test stereo
+              </button>
+            </li>
+            <li class="list-group-item">
+              <button
+                type="button"
+                class="btn btn-link js-audio"
+                data-file="assets/sounds/test-melody.mp3"
+              >
+                Test melody
+              </button>
+            </li>
+            <li class="list-group-item">
+              <input type="file" id="input" class="btn btn-link" />
+            </li>
+          </ul>
+        </div>
+
+        <div class="col-12"></div>
+      </div>
+      <div class="row gx-2 gy-2">
+        <div class="col-6">
+          <div class="caption">Frequency analyzer</div>
+          <div class="analyzer" id="analyzer1"></div>
+        </div>
+        <div class="col-6">
+          <div class="caption">Waveform analyzer</div>
+          <div class="analyzer" id="analyzer2"></div>
+        </div>
+
+        <div class="col-10 col-md-11">
+          <div class="caption">Waveform graphic</div>
+          <div class="analyzer wavegraph" id="wavegraph1"></div>
+          <div class="analyzer wavegraph" id="wavegraph2" style="display: none"></div>
+        </div>
+        <div class="col-2 col-md-1" title="Amplitude analyzer">
+          <div class="caption text-truncate">Amplitude analyzer</div>
+          <div class="analyzer" id="analyzer3"></div>
+        </div>
+
+        <div class="col-12 control-buttons">
+          <button id="play" class="btn btn-primary">Play/Pause</button>
+          <button id="stop" class="btn btn-primary">Stop</button>
+        </div>
+
+        <div class="col-12"></div>
+      </div>
+      <div class="row gx-2 gy-2">
+        <div class="col-5 col-md-5">
+          <div class="caption text-truncate">Mic&nbsp;Frequency analyzer</div>
+          <div class="analyzer" id="mic-analyzer1"></div>
+        </div>
+        <div class="col-5 col-md-6">
+          <div class="caption text-truncate">Mic&nbsp;Waveform analyzer</div>
+          <div class="analyzer" id="mic-analyzer2"></div>
+        </div>
+
+        <div class="col-2 col-md-1" title="Mic Amplitude analyzer">
+          <div class="caption text-truncate">Mic&nbsp;Amplitude analyzer</div>
+          <div class="analyzer" id="mic-analyzer3"></div>
+        </div>
+
+        <div class="col-12 control-buttons">
+          <button id="button-mic" class="btn btn-primary">Mic On/Off</button>
+          <i id="icon-mic" class="microphone off media-controls-icon-volume-mute"></i>
+        </div>
+
+        <div class="col-12"></div>
+      </div>
+
+      <div class="row gx-2 gy-2">
+        <div class="col-12">
+          <div class="caption text-truncate">Media player list</div>
+          <div class="media-player-list"></div>
+        </div>
+      </div>
+    </div>
+
+    <footer>
+      <div class="footer-main">
+        <a class="github-link external-link" href="https://github.com/sad-systems/a-tracktor"
+          >This project on the GitHub</a
+        >
+      </div>
+      <div>
+        Created by ©
+        <a class="external-link" href="https://sad-systems.github.io">«SAD-Systems»</a>, 2025
+      </div>
+    </footer>
+  </body>
+  <script src="demo.bundle.js"></script>
+</html>

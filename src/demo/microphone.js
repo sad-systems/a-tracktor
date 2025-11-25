@@ -2,9 +2,9 @@
  * Analyze microphone signal demo
  */
 
-import { FrequencyAnalyzer } from '../widgets/frequency-analyzer';
-import { WaveformAnalyzer } from '../widgets/waveform-analyzer';
-import { AmplitudeAnalyzer } from '../widgets/amplitude-analyzer';
+import { FrequencyAnalyzer } from '../widgets/analyzers/frequency-analyzer';
+import { WaveformAnalyzer } from '../widgets/analyzers/waveform-analyzer';
+import { AmplitudeAnalyzer } from '../widgets/analyzers/amplitude-analyzer';
 import * as _ from 'lodash';
 
 navigator.getUserMedia =

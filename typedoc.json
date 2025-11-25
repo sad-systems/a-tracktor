@@ -1,9 +1,27 @@
 {
-  "readme": "docs/includes/README.md",
+  "name": "A-Tractor",
+  "readme": "src/docs/README.md",
   "includeVersion": true,
-  "entryPoints": ["src/lib.ts", "src/lib", "src/widgets"],
+  "entryPoints": ["src/common", "src/widgets", "src/utils", "src/_deprecated"],
+  "entryPointStrategy": "expand",
   "out": "docs/public",
-  "media": "docs/assets",
-  "includes": "docs/includes",
-  "disableSources": true
+  "disableSources": true,
+  "projectDocuments": ["src/docs/pages/**/*.md"],
+  "exclude": [
+    "**/node_modules/**",
+    "**/*.test.ts",
+    "**/*.spec.ts"
+  ],
+  "plugin": ["typedoc-material-theme"],
+  "themeColor": "#fff",
+  "skipErrorChecking": true,
+  "excludeExternals": true,
+  "excludePrivate": true,
+  "excludeProtected": true,
+  "categorizeByGroup": true,
+  "searchInComments": true,
+  "githubPages": false,
+  "hideGenerator": true,
+  "cleanOutputDir": true,
+  "theme": "default"
 }

@@ -1,8 +1,9 @@
-# <img src="docs/assets/images/a-tractor.jpg" width="100%">
+# <img src="src/docs/assets/images/a-tracktor-2.png" width="100%">
 
-Javascript библиотека виджетов для визуализации аудио данных на веб странице.
+Javascript библиотека виджетов для визуализации аудио данных и 
+добавления настраиваемого медиа плеера на веб страницу.
 
-> Change language: [![Русский](docs/assets/images/ru.gif)](README.ru.md) [![English](docs/assets/images/en.gif)](README.md)
+> Change language: [![Русский](src/docs/assets/images/ru.gif)](README.ru.md) [![English](src/docs/assets/images/en.gif)](README.md)
 
 ## Используемые технологии
 
@@ -11,7 +12,8 @@ Javascript библиотека виджетов для визуализации
         
 ## Описание
 
-Библиотека содержит набор виджетов для визуализации аудио данных на веб странице.
+Библиотека содержит набор виджетов для визуализации аудио данных аудио данных и
+добавления настраиваемого медиа плеера на веб страницу.
 
 ## Документация
 
@@ -55,7 +57,7 @@ yarn docs
 
 ### Сборка демо проекта
 ```
-yarn build-demo
+yarn build:demo
 ```
 
 ### Публикация пакета в `npm` хранилище
@@ -69,4 +71,4 @@ ISC
 
 ## Автор
 
-  MrDigger © [SAD-Systems](https://sad-systems.github.io), 2024
+  MrDigger © [SAD-Systems](https://sad-systems.github.io), 2025

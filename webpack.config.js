@@ -18,6 +18,9 @@ module.exports = webpackMerge.merge(createWebpackConfig({ contentBase: 'dist' })
       { from: 'package.json', to: 'package.json' },
       { from: 'README.npm.md', to: 'README.md' },
       { from: 'LICENSE', to: '[name]' },
+      { from: 'src/assets/fonts/glyphicons', to: 'assets/fonts/glyphicons' },
+      { from: 'src/styles/media-player.scss', to: 'styles/media-player.scss' },
+      { from: 'src/styles/glyphicons.scss', to: 'styles/glyphicons.scss' },
     ]),
   ],
 });
