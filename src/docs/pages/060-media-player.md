@@ -8,26 +8,31 @@ category: Examples
 
 {@link media-player.MediaPlayer | See class description here}.
 
-## 1. Define HTML
+## 1. Define HTML container.
 
 ```HTML
 <body>
   <div class="media-player"></div>
 </body>
 ```
+## 2. Import classes and styles.
+```javascript
+import '@sad-systems/a-tracktor/css/media-player.css'; // Use defaults media player and list CSS styles.
+                                                       // Also you can use SCSS styles from: 
+                                                       // '@sad-systems/a-tracktor/styles/media-player.scss'. 
+import { MediaPlayer, FrequencyAnalyzer } from '@sad-systems/a-tracktor';
+```
 
-## 2. Define media.
+## 3. Define media.
 
 ```javascript
-import { MediaPlayer, FrequencyAnalyzer } from '@sad-systems/a-tracktor';
-
 const MEDIA_SOURCE1 = 'audio.mp3';
 const MEDIA_POSTER1 = 'image.jpg';
 const MEDIA_SOURCE2 = 'audio2.mp3';
 const MEDIA_POSTER2 = 'image2.jpg';
 ```
 
-## 3. Create media player
+## 4. Create media player
 
 ### Case 1. With existed view element.
 

@@ -8,7 +8,7 @@ category: Examples
 
 {@link media-player.MediaPlayerList | See class description here}.
 
-## 1. Define HTML
+## 1. Define HTML container.
 
 ```HTML
 <body>
@@ -16,11 +16,17 @@ category: Examples
 </body>
 ```
 
-## 2. Set the list of media files.
+## 2. Import classes and styles.
+```javascript
+import '@sad-systems/a-tracktor/css/media-player.css'; // Use defaults media player and list CSS styles.
+                                                       // Also you can use SCSS styles from: 
+                                                       // '@sad-systems/a-tracktor/styles/media-player.scss'. 
+import { MediaPlayer, FrequencyAnalyzer } from '@sad-systems/a-tracktor';
+```
+
+## 3. Set the list of media files.
 
 ```javascript
-import { MediaPlayerList, FrequencyAnalyzer } from '@sad-systems/a-tracktor';
-
 const mediaList = [
   {
     // First media with default params.
@@ -49,7 +55,7 @@ const mediaList = [
 const mediaListOption = { loop: true };
 ```
 
-## 3. Create media player list
+## 4. Create media player list
 
 ### Case 1:
 
