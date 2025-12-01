@@ -414,7 +414,7 @@ export class MediaPlayer {
    * Adds the media HTML element to the view HTML element
    * if the media element was created automatically.
    *
-   * @warning It's very important!
+   * WARNING: It's very important!
    *          The "audio" tag is required on the page for mobile devices!
    *          Otherwise, files will not be playable!
    */
