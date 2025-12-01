@@ -1,6 +1,6 @@
 {
   "name": "@sad-systems/a-tracktor",
-  "version": "2.0.1",
+  "version": "2.0.2",
   "description": "The library of widgets for visualizing and control media (audio/video) data.",
   "main": "lib.bundle.js",
   "module": "lib.js",
@@ -24,6 +24,7 @@
     "widget",
     "microphone"
   ],
+  "types": "./lib.d.ts",
   "scripts": {
     "start": "cross-env NODE_ENV=development webpack-dev-server --config webpack.demo.config.js",
     "build": "cross-env NODE_ENV=production webpack && yarn make-declarations && yarn build:css && yarn docs && yarn build:demo",

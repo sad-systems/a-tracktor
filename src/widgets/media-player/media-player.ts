@@ -49,19 +49,25 @@ export enum MediaType {
 export interface IMediaPlayerOptions {
   /** URL of poster image for the media source. */
   poster?: string;
+  /** Initial media source volume. Value should be in range of [0 - 1] (it means: 0 - 100%). */
+  volume?: number;
+  /** Initial time position offset in seconds. */
+  position?: number;
+
   /** CSS selector or HTML container element to render player content. Auto created by default. */
   viewElement?: HTMLElement | string;
-
   /** CSS class for player container HTML element. By default `media-player-item`. */
   viewElementClass?: string;
   /** Tag of player container HTML element. By default `div`. */
   viewElementTag?: string;
-  /** Reference to the HTML media element taken as the source of media data. Auto created by default. */
-  mediaElement?: HTMLMediaElement;
+
+  /** CSS selector or reference to the HTML media element taken as the source of media data. Auto created by default. */
+  mediaElement?: HTMLMediaElement | string;
   /** The type of media data created by default. By default `MediaType.AUDIO`. */
   mediaType?: MediaType;
   /** Strategy to preload media content. By default `metadata`. */
   mediaSourcePreload?: TMediaSourcePreload;
+
   /** Class of audio analyzer to visualize audio. By default `WaveformAnalyzer`. */
   analyzerClass?: AbstractAnalyzer;
   /** Audio analyzer options if needed. */
@@ -94,6 +100,13 @@ export interface IMediaPlayerOptions {
        - volumeValue: '.volume-value'
    */
   viewSelectors?: { [key in TMediaElements]: string | null | undefined };
+  /**
+   * Possible cases:
+   *   - TRUE means always remove media element when destroy method is called.
+   *   - FALSE means never remove media element when destroy method is called.
+   *   - UNDEFINED means remove media element only if it was automatically created.
+   */
+  removeMediaOnDestroy?: boolean;
 }
 /**
  * HTML template for Media player without volume slide.
@@ -175,7 +188,9 @@ export class MediaPlayer {
   protected viewElementTag: string = 'div';
   protected mediaElement: HTMLMediaElement;
   protected mediaType: MediaType = MediaType.AUDIO;
-  protected poster: string = '';
+  protected poster?: string;
+  protected volume?: number;
+  protected position?: number;
   protected mediaSourcePreload: TMediaSourcePreload = 'metadata';
   protected analyzerClass: AbstractAnalyzer = WaveformAnalyzer as any;
   protected analyzerOptions: any = { color: '#c00' };
@@ -202,7 +217,9 @@ export class MediaPlayer {
     volumeLevel: null,
     volumeValue: null,
   };
+  protected removeMediaOnDestroy?: boolean;
   protected isViewElementDefined = false;
+  protected isMediaElementDefined = false;
   protected mediaTimePointer?: MediaTimePointer;
   protected analyzer?: AbstractAnalyzer;
   protected timerElapsed?: MediaTimer;
@@ -232,7 +249,9 @@ export class MediaPlayer {
    * Destroys all elements and removes all their own event listeners.
    */
   destroy() {
+    this.stop();
     this.unregister();
+    this.removeMediaOnDestroy && this.mediaElement.remove();
   }
 
   /**
@@ -317,7 +336,12 @@ export class MediaPlayer {
 
   protected setOptions(options?: IMediaPlayerOptions) {
     this.poster = options?.poster ?? this.poster;
+    this.volume = options?.volume ?? this.volume;
+    this.position = options?.position ?? this.position;
+    if (this.volume && !(this.volume >= 0 && this.volume <= 1))
+      throw Error(`Param 'volume' must be in range [0-1], but [${this.volume}] is given`);
 
+    // Define view element from options.
     if (options?.viewElement) {
       if (options.viewElement instanceof HTMLElement) {
         this.viewElement = options.viewElement;
@@ -329,11 +353,21 @@ export class MediaPlayer {
       }
     }
 
-    this.isViewElementDefined = !!this.viewElement;
-
     this.viewElementClass = options?.viewElementClass ?? this.viewElementClass;
     this.viewElementTag = options?.viewElementTag ?? this.viewElementTag;
-    this.mediaElement = options?.mediaElement ?? this.mediaElement;
+
+    // Define media element from options.
+    if (options?.mediaElement) {
+      if (options.mediaElement instanceof HTMLMediaElement) {
+        this.mediaElement = options.mediaElement;
+      } else if (typeof options.mediaElement === 'string') {
+        this.mediaElement = document.querySelector<HTMLMediaElement>(options.mediaElement)!;
+      }
+      if (!this.mediaElement) {
+        throw Error('[MP] options.mediaElement is incorrect!');
+      }
+    }
+
     this.mediaType = options?.mediaType ?? this.mediaType;
     this.mediaSourcePreload = options?.mediaSourcePreload ?? this.mediaSourcePreload;
     this.template = options?.template ?? this.template;
@@ -347,16 +381,23 @@ export class MediaPlayer {
     };
     this.mediaStateOptions = { ...this.mediaStateOptions, ...options?.mediaStateOptions };
     this.buttonVolumeClassActive = options?.buttonVolumeClassActive ?? this.buttonVolumeClassActive;
+
+    this.isViewElementDefined = !!this.viewElement;
+    this.isMediaElementDefined = !!this.mediaElement;
+    this.removeMediaOnDestroy = options?.removeMediaOnDestroy ?? this.removeMediaOnDestroy;
   }
 
   protected init() {
     this.createMedia();
     this.createView();
+    this.addMediaElementToView();
   }
 
   protected createMedia() {
-    if (!this.mediaElement)
+    if (!this.mediaElement) {
       this.mediaElement = document.createElement(this.mediaType) as HTMLMediaElement;
+      this.removeMediaOnDestroy = this.removeMediaOnDestroy ?? true;
+    }
 
     this.mediaElement.crossOrigin = 'anonymous'; // Important!
 
@@ -364,7 +405,24 @@ export class MediaPlayer {
       this.mediaElement.src = this.mediaSource;
     }
 
-    this.mediaElement.preload = this.mediaSourcePreload;
+    this.mediaElement.currentTime = this.position ?? this.mediaElement.currentTime;
+    this.mediaElement.volume = this.volume ?? this.mediaElement.volume;
+    this.mediaElement.preload = this.mediaSourcePreload ?? this.mediaElement.preload;
+  }
+
+  /**
+   * Adds the media HTML element to the view HTML element
+   * if the media element was created automatically.
+   *
+   * @warning It's very important!
+   *          The "audio" tag is required on the page for mobile devices!
+   *          Otherwise, files will not be playable!
+   */
+  protected addMediaElementToView() {
+    if (!this.isMediaElementDefined) {
+      this.mediaElement.style.display = 'none';
+      this.viewElement.append(this.mediaElement);
+    }
   }
 
   protected createView() {

@@ -17,10 +17,11 @@ category: Examples
 ```
 
 ## 2. Import classes and styles.
+
 ```javascript
 import '@sad-systems/a-tracktor/css/media-player.css'; // Use defaults media player and list CSS styles.
-                                                       // Also you can use SCSS styles from: 
-                                                       // '@sad-systems/a-tracktor/styles/media-player.scss'. 
+// Also you can use SCSS styles from:
+// '@sad-systems/a-tracktor/styles/media-player.scss'.
 import { MediaPlayer, FrequencyAnalyzer } from '@sad-systems/a-tracktor';
 ```
 
