@@ -1,5 +1,5 @@
 import '../styles/media-player.scss';
-import { AmplitudeAnalyzer, FrequencyAnalyzer, MediaPlayerList } from '../lib';
+import { AmplitudeAnalyzer, FrequencyAnalyzer, MediaPlayer, MediaPlayerList } from '../lib';
 
 /**
  * Media player demo.
@@ -39,6 +39,17 @@ const mediaList = [
       mediaTimePointerOptions: { pointerStyle: { top: '', bottom: '', background: '#fbd298' } },
     },
   },
+  {
+    source: 'https://ocarius.sadspace.ru/media/video/dragon4x3.mp4',
+    poster: 'https://ocarius.sadspace.ru/media/video/dragon4x3.jpg',
+    volume: 1,
+    position: 0,
+    playerOptions: {
+      analyzerClass: FrequencyAnalyzer, //AmplitudeAnalyzer,
+      analyzerOptions: { color: '#d46b25' },
+      mediaTimePointerOptions: { pointerStyle: { top: '', bottom: '', background: '#d46b25' } },
+    },
+  },
 ];
 const mediaListOption = { loop: true, single: false };
 
@@ -50,8 +61,18 @@ const mediaPlayerList = new MediaPlayerList(mediaList, mediaListOption);
 const el = document.querySelector('.media-player-list');
 el.append(mediaPlayerList.getViewElement());
 
-// Media player.
+// Video player.
+/**
+const MEDIA_SOURCE = 'https://ocarius.sadspace.ru/media/video/martian-voyage.mp4';
+const MEDIA_POSTER = 'https://ocarius.sadspace.ru/media/video/martian-voyage.jpg';
 
+const mediaPlayer1 = new MediaPlayer(MEDIA_SOURCE, {
+  poster: MEDIA_POSTER,
+  viewElement: '.video-player-list',
+  analyzerClass: null,
+  analyzerOptions: { color: '#f00' },
+});
+/**/
 /*
 const MEDIA_SOURCE = 'https://ocarius.sadspace.ru/media/audio/2025/hol-chapter-9.mp3';
 const MEDIA_POSTER = 'https://sadspace.ru/1272b306359e33665f26.jpg';

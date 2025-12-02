@@ -68,8 +68,16 @@ export interface IMediaPlayerOptions {
   /** Strategy to preload media content. By default `metadata`. */
   mediaSourcePreload?: TMediaSourcePreload;
 
-  /** Class of audio analyzer to visualize audio. By default `WaveformAnalyzer`. */
-  analyzerClass?: AbstractAnalyzer;
+  /** CSS class to add to auto created video element. By default `poster`. */
+  videoElementClass?: string;
+
+  /**
+   * Class of audio analyzer to visualize audio.
+   *
+   * - For audio source is set to `WaveformAnalyzer` by default.
+   * - For video source is set to null by default and should be set manually if needed..
+   */
+  analyzerClass?: AbstractAnalyzer | null;
   /** Audio analyzer options if needed. */
   analyzerOptions?: any;
   /** MediaTimePointer component options if needed. */
@@ -168,6 +176,11 @@ export const TEMPLATE_WITH_VERTICAL_VOLUME_SLIDER =
  * @see [Complete example for MediaPlayerList](../../docs/pages/060-media-player.md)
  */
 export class MediaPlayer {
+  /**
+   * List of all video formats for automatic media type detection.
+   */
+  public static videoExtensions = ['mp4', 'webm', 'ogv', 'mov', 'avi'];
+
   // User options.
   protected template = TEMPLATE_WITH_HORIZONTAL_VOLUME_SLIDER;
   protected viewSelectors: { [key in TMediaElements]: string | null | undefined } = {
@@ -183,6 +196,7 @@ export class MediaPlayer {
     volumeLevel: '.volume-level',
     volumeValue: '.volume-value',
   };
+  protected videoElementClass = 'poster';
   protected viewElementClass = 'media-player-item';
   protected viewElement: HTMLElement;
   protected viewElementTag: string = 'div';
@@ -192,7 +206,7 @@ export class MediaPlayer {
   protected volume?: number;
   protected position?: number;
   protected mediaSourcePreload: TMediaSourcePreload = 'metadata';
-  protected analyzerClass: AbstractAnalyzer = WaveformAnalyzer as any;
+  protected analyzerClass: AbstractAnalyzer | null = WaveformAnalyzer as any;
   protected analyzerOptions: any = { color: '#c00' };
   protected mediaTimePointerOptions: IMediaTimePointerOptions = {
     mode: EnumMediaTimePointerMode.BAR,
@@ -355,6 +369,7 @@ export class MediaPlayer {
 
     this.viewElementClass = options?.viewElementClass ?? this.viewElementClass;
     this.viewElementTag = options?.viewElementTag ?? this.viewElementTag;
+    this.videoElementClass = options?.videoElementClass ?? this.videoElementClass;
 
     // Define media element from options.
     if (options?.mediaElement) {
@@ -368,13 +383,22 @@ export class MediaPlayer {
       }
     }
 
-    this.mediaType = options?.mediaType ?? this.mediaType;
+    this.mediaType = options?.mediaType ?? this.autoDetectMediaSourceType(this.mediaSource); // Auto detect.
     this.mediaSourcePreload = options?.mediaSourcePreload ?? this.mediaSourcePreload;
     this.template = options?.template ?? this.template;
     this.viewSelectors = { ...this.viewSelectors, ...options?.viewSelectors };
 
-    this.analyzerClass = options?.analyzerClass ?? this.analyzerClass;
+    // Audio analyzer.
+    if (this.mediaType === MediaType.VIDEO) {
+      // For video.
+      this.analyzerClass = options?.analyzerClass ?? null;
+    } else {
+      // For audio.
+      this.analyzerClass =
+        options?.analyzerClass === null ? null : (options?.analyzerClass ?? this.analyzerClass);
+    }
     this.analyzerOptions = options?.analyzerOptions ?? this.analyzerOptions;
+
     this.mediaTimePointerOptions = {
       ...this.mediaTimePointerOptions,
       ...options?.mediaTimePointerOptions,
@@ -393,6 +417,21 @@ export class MediaPlayer {
     this.addMediaElementToView();
   }
 
+  /**
+   * Auto detects a media source type (audio or video).
+   *
+   * @param source URL f media file source.
+   */
+  protected autoDetectMediaSourceType(source?: string): MediaType {
+    const extension = source.toLowerCase().substring(source.lastIndexOf('.') + 1);
+
+    if (MediaPlayer.videoExtensions.includes(extension)) {
+      return MediaType.VIDEO;
+    }
+
+    return MediaType.AUDIO;
+  }
+
   protected createMedia() {
     if (!this.mediaElement) {
       this.mediaElement = document.createElement(this.mediaType) as HTMLMediaElement;
@@ -408,6 +447,11 @@ export class MediaPlayer {
     this.mediaElement.currentTime = this.position ?? this.mediaElement.currentTime;
     this.mediaElement.volume = this.volume ?? this.mediaElement.volume;
     this.mediaElement.preload = this.mediaSourcePreload ?? this.mediaElement.preload;
+
+    if (this.mediaType === MediaType.VIDEO) {
+      // To enable inline video on Apple devices.
+      this.mediaElement.setAttribute('playsinline', '');
+    }
   }
 
   /**
@@ -420,8 +464,20 @@ export class MediaPlayer {
    */
   protected addMediaElementToView() {
     if (!this.isMediaElementDefined) {
-      this.mediaElement.style.display = 'none';
-      this.viewElement.append(this.mediaElement);
+      // Audio.
+      if (this.mediaType === MediaType.AUDIO) {
+        this.mediaElement.style.display = 'none';
+        this.viewElement.append(this.mediaElement);
+      } else {
+        // Video.
+        if (this.viewElements.poster) {
+          this.viewElements.poster.replaceWith(this.mediaElement);
+        } else {
+          this.viewElement.prepend(this.mediaElement);
+        }
+        // CSS class for video.
+        this.videoElementClass && this.mediaElement.classList.add(this.videoElementClass);
+      }
     }
   }
 
@@ -455,14 +511,21 @@ export class MediaPlayer {
   }
 
   protected createPoster() {
-    if (this.viewElements.poster && this.poster) {
-      this.viewElements.poster.style.backgroundImage = `url(${this.poster})`;
+    if (this.poster) {
+      // Set audio poster.
+      if (this.viewElements.poster && this.mediaType === MediaType.AUDIO) {
+        this.viewElements.poster.style.backgroundImage = `url(${this.poster})`;
+      }
+      // Set video poster.
+      if (this.mediaType === MediaType.VIDEO) {
+        (this.mediaElement as HTMLVideoElement).poster = this.poster;
+      }
     }
   }
 
   protected register() {
     // Audio analyzer.
-    if (this.viewElements.analyzer) {
+    if (this.viewElements.analyzer && this.analyzerClass) {
       // @ts-ignore
       this.analyzer = new this.analyzerClass(
         this.mediaElement,

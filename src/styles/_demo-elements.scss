@@ -82,3 +82,31 @@ $main-bg-color: #f0f0f0aa;
 input[type='file'] {
   width: 100%;
 }
+
+.video-player-list {
+  margin: 0 auto;
+  text-align: center;
+  display: flex;
+  place-items: center;
+  justify-content: center;
+
+  ul {
+    padding: 0;
+    margin: 0;
+    list-style: none;
+  }
+}
+
+@media (max-width: 400px) {
+  body {
+    .media-player-item {
+      width: 100vw;
+      // min-width: 100vw;
+    }
+
+    &.container-fluid,
+    .container-fluid {
+      padding: 0;
+    }
+  }
+}
