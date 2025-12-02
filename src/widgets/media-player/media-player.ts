@@ -75,7 +75,7 @@ export interface IMediaPlayerOptions {
    * Class of audio analyzer to visualize audio.
    *
    * - For audio source is set to `WaveformAnalyzer` by default.
-   * - For video source is set to null by default and should be set manually if needed..
+   * - For video source is set to `null` by default and should be set manually if needed.
    */
   analyzerClass?: AbstractAnalyzer | null;
   /** Audio analyzer options if needed. */
