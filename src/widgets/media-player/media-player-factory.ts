@@ -62,16 +62,18 @@ export class MediaPlayerFactory {
   }
 
   /**
-   * ...
+   * Creates an instance of a new media player.
+   * Automatically adds the instance to the internal list.
    *
-   * @param source ...
-   * @param options ...
+   * @param source Media file URL.
+   * @param options Optional params.
+   *
+   * @returns Instance of a new media player.
    */
   createMediaPlayer(source: string, options: IMediaPlayerOptions): MediaPlayer {
     const player = this.createPlayer(source, options);
-    const index = this.mediaPlayerList.length;
-    const onPlay = () => this.playItem(index);
-    const onEnded = () => this.playItemNextAfter(index);
+    const onPlay = () => this.playItem(this.getPlayerIndex(player));
+    const onEnded = () => this.playItemNextAfter(this.getPlayerIndex(player));
 
     player.getMediaElement().addEventListener('play', onPlay);
     player.getMediaElement().addEventListener('ended', onEnded);
@@ -82,17 +84,28 @@ export class MediaPlayerFactory {
   }
 
   /**
-   * Destroys the old list.
+   * Destroys the given instance of media player and removes it from internal list.
+   *
+   * @param player
+   */
+  destroyMediaPlayer(player: MediaPlayer) {
+    const index = this.getPlayerIndex(player);
+
+    if (index > -1) {
+      // Destroy player in list.
+      this.destroyPlayer(index);
+      this.mediaPlayerList.splice(index, 1);
+    } else {
+      // Destroy orphaned instance of player.
+      player.destroy();
+    }
+  }
+
+  /**
+   * Destroys the whole media players and clear the internal list.
    */
   destroyList() {
-    this.mediaPlayerList.forEach((item) => {
-      const player = item.player;
-
-      player.getMediaElement().removeEventListener('play', item.onPlay);
-      player.getMediaElement().removeEventListener('ended', item.onEnded);
-      player.stop();
-      player.destroy();
-    });
+    this.mediaPlayerList.forEach((_, index) => this.destroyPlayer(index));
     this.mediaPlayerList = [];
   }
 
@@ -108,8 +121,21 @@ export class MediaPlayerFactory {
     return player;
   }
 
+  protected destroyPlayer(index: number) {
+    const item = this.mediaPlayerList[index];
+
+    if (item?.player) {
+      item.player.getMediaElement().removeEventListener('play', item.onPlay);
+      item.player.getMediaElement().removeEventListener('ended', item.onEnded);
+      item.player.destroy();
+      item.player = null;
+    }
+  }
+
   protected playItem(index: number) {
     this.mediaPlayerList.forEach((item, i) => {
+      if (!item.player) return;
+
       const media = item.player.getMediaElement();
 
       if (i === index) {
@@ -120,6 +146,10 @@ export class MediaPlayerFactory {
         !media.paused && media.pause();
       }
     });
+  }
+
+  protected getPlayerIndex(player: MediaPlayer): number {
+    return this.mediaPlayerList.findIndex((item) => item.player === player);
   }
 
   protected playItemNextAfter(index: number) {

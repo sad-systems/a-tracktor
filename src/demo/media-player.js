@@ -55,11 +55,22 @@ const mediaListOption = { loop: true, single: false, volume: 0.75 };
 const mediaPlayerFactory = new MediaPlayerFactory(mediaListOption);
 const elContainer = document.querySelector('.media-player-list');
 
+const players = [];
+
 for (let item of mediaList) {
   const newPlayer = mediaPlayerFactory.createMediaPlayer(item.source, item.playerOptions);
 
+  players.push(newPlayer);
+
   elContainer.append(newPlayer.getViewElement());
 }
+
+/*
+// Test player removing.
+setTimeout(() => {
+  console.log('remove player 2');
+  mediaPlayerFactory.destroyMediaPlayer(players[1]);
+}, 5000);
 
 // Media player list. (deprecated)
 /*

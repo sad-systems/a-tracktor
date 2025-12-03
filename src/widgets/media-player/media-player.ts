@@ -249,7 +249,7 @@ export class MediaPlayer {
    * Constructor.
    *
    * @param mediaSource  Media file URL.
-   * @param options      Option params.
+   * @param options      Optional params.
    */
   constructor(
     protected mediaSource?: string,
@@ -266,6 +266,7 @@ export class MediaPlayer {
     this.stop();
     this.unregister();
     this.removeMediaOnDestroy && this.mediaElement.remove();
+    this.viewElement.remove();
   }
 
   /**
