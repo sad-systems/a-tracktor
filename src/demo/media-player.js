@@ -1,5 +1,6 @@
 import '../styles/media-player.scss';
 import { AmplitudeAnalyzer, FrequencyAnalyzer, MediaPlayer, MediaPlayerList } from '../lib';
+import { MediaPlayerFactory } from '../widgets/media-player/media-player-factory';
 
 /**
  * Media player demo.
@@ -8,10 +9,10 @@ import { AmplitudeAnalyzer, FrequencyAnalyzer, MediaPlayer, MediaPlayerList } fr
 const mediaList = [
   {
     source: 'assets/sounds/test-melody.mp3',
-    poster: 'https://sadspace.ru/1272b306359e33665f26.jpg',
-    volume: 1,
-    position: 0,
     playerOptions: {
+      poster: 'https://sadspace.ru/1272b306359e33665f26.jpg',
+      volume: 1,
+      position: 0,
       analyzerClass: FrequencyAnalyzer,
       analyzerOptions: { color: '#0f0' },
       mediaTimePointerOptions: { pointerStyle: { top: '', bottom: '', background: '#00ff0082' } },
@@ -19,10 +20,10 @@ const mediaList = [
   },
   {
     source: 'assets/sounds/test-stereo.mp3', // 'assets/sounds/test-melody.mp3', // ,
-    poster: 'https://ocarius.sadspace.ru/media/audio/2015/2015-1.ru.jpg',
-    volume: 0.5,
-    position: 5,
     playerOptions: {
+      poster: 'https://ocarius.sadspace.ru/media/audio/2015/2015-1.ru.jpg',
+      volume: 0.5,
+      position: 5,
       //analyzerClass: FrequencyAnalyzer, //AmplitudeAnalyzer,
       analyzerOptions: { color: '#f00' },
       mediaTimePointerOptions: { pointerStyle: { top: '', bottom: '', background: '#f00' } },
@@ -30,10 +31,8 @@ const mediaList = [
   },
   {
     source: 'assets/sounds/test-sound-40-20000.mp3', // 'assets/sounds/test-melody.mp3', //,
-    poster: 'https://ocarius.sadspace.ru/media/audio/2002/2002-1-1.jpg',
-    volume: 1,
-    position: 0,
     playerOptions: {
+      poster: 'https://ocarius.sadspace.ru/media/audio/2002/2002-1-1.jpg',
       analyzerClass: FrequencyAnalyzer, //AmplitudeAnalyzer,
       analyzerOptions: { color: '#fbd298' },
       mediaTimePointerOptions: { pointerStyle: { top: '', bottom: '', background: '#fbd298' } },
@@ -41,25 +40,35 @@ const mediaList = [
   },
   {
     source: 'https://ocarius.sadspace.ru/media/video/dragon4x3.mp4',
-    poster: 'https://ocarius.sadspace.ru/media/video/dragon4x3.jpg',
-    volume: 1,
-    position: 0,
     playerOptions: {
+      poster: 'https://ocarius.sadspace.ru/media/video/dragon4x3.jpg',
       analyzerClass: FrequencyAnalyzer, //AmplitudeAnalyzer,
       analyzerOptions: { color: '#d46b25' },
       mediaTimePointerOptions: { pointerStyle: { top: '', bottom: '', background: '#d46b25' } },
     },
   },
 ];
-const mediaListOption = { loop: true, single: false };
+const mediaListOption = { loop: true, single: false, volume: 0.75 };
 
-// Media player list.
+// Use Media player factory.
 
+const mediaPlayerFactory = new MediaPlayerFactory(mediaListOption);
+const elContainer = document.querySelector('.media-player-list');
+
+for (let item of mediaList) {
+  const newPlayer = mediaPlayerFactory.createMediaPlayer(item.source, item.playerOptions);
+
+  elContainer.append(newPlayer.getViewElement());
+}
+
+// Media player list. (deprecated)
+/*
 const mediaPlayerList = new MediaPlayerList(mediaList, mediaListOption);
 //const mediaPlayerList = new MediaPlayerList(mediaList, { viewElement: '.media-player-list' });
 
 const el = document.querySelector('.media-player-list');
 el.append(mediaPlayerList.getViewElement());
+*/
 
 // Video player.
 /**

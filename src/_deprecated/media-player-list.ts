@@ -1,11 +1,12 @@
 /**
- * @mergeModuleWith media-player
+ * @mergeModuleWith deprecated
  * @packageDocumentation
  */
-import { IMediaPlayerOptions, MediaPlayer } from './media-player';
+import { IMediaPlayerOptions, MediaPlayer } from '../widgets/media-player/media-player';
 
 /**
  * Options for the MediaListItem.
+ * @deprecated
  */
 export interface IMediaListItem {
   /** URL of media source. */
@@ -24,6 +25,7 @@ export interface IMediaListItem {
 }
 /**
  * Options for the MediaPlayerList.
+ * @deprecated
  */
 export interface IMediaPlayerListOptions {
   /**
@@ -50,14 +52,12 @@ export interface IMediaPlayerListOptions {
 /**
  * The widget represents a list of media players.
  *
- * ![](../../docs/assets/images/media-player-list.png)
- *
  * @example
  * ```javascript
  * const mediaPlayerList = new MediaPlayerList([{ source: 'audio1.mp3', poster: 'image.jpg' }], { viewElement: '.media-player-list' });
  * ```
  *
- * @see [Complete example for MediaPlayerList](../../docs/pages/070-media-player-list.md)
+ * @deprecated Use {@link media-player.MediaPlayerFactory} instead.
  */
 export class MediaPlayerList {
   // User options.

@@ -23,7 +23,7 @@ import { MediaTimePointer } from './widgets/media-player-components/media-time-p
 import { MediaTimer } from './widgets/media-player-components/media-timer';
 import { MediaVolume } from './widgets/media-player-components/media-volume';
 import { MediaPlayer } from './widgets/media-player/media-player';
-import { MediaPlayerList } from './widgets/media-player/media-player-list';
+import { MediaPlayerList } from './_deprecated/media-player-list';
 
 export {
   // Definitions.

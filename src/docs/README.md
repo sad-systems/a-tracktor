@@ -26,7 +26,7 @@ yarn add @sad-systems/a-tracktor
 - [Example 4 - Using multiple analyzers for the same dedicated audio source.](pages/040-analyzer.md)
 - [Example 5 - Analyze a microphone.](pages/050-analyzer.md)
 - [Example 6 - Media player.](pages/060-media-player.md)
-- [Example 7 - Media player list.](pages/070-media-player-list.md)
+- [Example 7 - Media player factory.](pages/070-media-player-factory.md)
 
 ## Credits
 
