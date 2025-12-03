@@ -1,6 +1,6 @@
 {
   "name": "@sad-systems/a-tracktor",
-  "version": "2.2.1",
+  "version": "2.2.2",
   "description": "The library of widgets for visualizing and control media (audio/video) data.",
   "main": "lib.bundle.js",
   "module": "lib.js",
