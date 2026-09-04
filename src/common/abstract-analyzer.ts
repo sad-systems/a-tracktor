@@ -51,6 +51,12 @@ export interface IAbstractAnalyzerOptions {
    */
   fftSize?: number;
   /**
+   * The upper frequency limit to display.
+   * By default 20KHz.
+   * 0 - means: no limits.
+   */
+  highFrequencyLimit?: number;
+  /**
    * Main color of widget drawing.
    */
   color?: string;
@@ -79,6 +85,7 @@ export abstract class AbstractAnalyzer {
   protected dataArray: Uint8Array<ArrayBuffer>;
   protected requestAniFrameID: number;
   protected isAudioContextInitialized = false;
+  protected highFrequencyLimit: number = 20_000; // 20 KHz
 
   /**
    * The list of audio sources.
@@ -180,6 +187,44 @@ export abstract class AbstractAnalyzer {
     this.isAudioContextInitialized = false;
   }
 
+  /**
+   * Returns the sample rate of the audio (sampling frequency).
+   *
+   * For example it can be: 48000 Hz.
+   */
+  getSampleRate(): number {
+    return this.audioContext.sampleRate;
+  }
+
+  /**
+   * Returns the full frequency range of the audio.
+   *
+   * For example it can be: 24000 Гц for sample rate 48000 Hz.
+   */
+  getFullFrequencyRange(): number {
+    return this.getSampleRate() / 2;
+  }
+
+  /**
+   * Returns the frequency resolution of the audio
+   * (frequency step of one bin).
+   *
+   * frequencyResolution = fullFrequencyRange / frequencyBinCount;
+   * For example one bin can be: 24000 / 128 = 187.5 Гц
+   */
+  getFrequencyResolution(): number {
+    return this.getFullFrequencyRange() / this.analyser.frequencyBinCount;
+  }
+
+  /**
+   * Returns a frequency for the given bin index.
+   *
+   * @param index Bin index.
+   */
+  getFrequencyForBin(index: number): number {
+    return (index / this.analyser.frequencyBinCount) * this.getFullFrequencyRange();
+  }
+
   protected getDefaultFftSize(): number {
     return 256;
   }
@@ -203,6 +248,7 @@ export abstract class AbstractAnalyzer {
   protected setOptions(options?: IAbstractAnalyzerOptions) {
     options = options || {};
     this.fftSize = options.fftSize || this.getDefaultFftSize();
+    this.highFrequencyLimit = options.highFrequencyLimit ?? this.highFrequencyLimit;
     this.color = AbstractAnalyzer.normalizeColor(options.color || this.getDefaultColor());
     this.sourceChannel = options.sourceChannel || 0;
     this.connectDestination =

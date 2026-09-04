@@ -12,6 +12,8 @@ import { IMediaStateOptions, MediaState } from '../media-player-components/media
 import { MediaVolume } from '../media-player-components/media-volume';
 import { AbstractAnalyzer } from '../../common/abstract-analyzer';
 import { WaveformAnalyzer } from '../analyzers/waveform-analyzer';
+import { getFullscreenElement, toggleFullScreen } from '../../utils/fullscreen';
+import { debounce } from '../../utils/debounce';
 
 /**
  * Strategy to preload media content.
@@ -27,12 +29,14 @@ export type TMediaSourcePreload = 'none' | 'metadata' | 'auto' | '';
 export type TMediaElements =
   | 'poster'
   | 'analyzer'
+  | 'controls'
   | 'timePointer'
   | 'timerElapsed'
   | 'timerRemaining'
   | 'timerDuration'
   | 'buttonPlay'
   | 'buttonVolume'
+  | 'buttonFullscreen'
   | 'volumeSlider'
   | 'volumeLevel'
   | 'volumeValue';
@@ -49,6 +53,17 @@ export enum MediaType {
 export interface IMediaPlayerOptions {
   /** URL of poster image for the media source. */
   poster?: string;
+  /** Hint for poster image. */
+  posterHint?: string;
+  /** Callback for poster 'click' event. */
+  posterOnClick?: (mp: MediaPlayer) => void;
+  /**
+   * CSS class to add to poster element.
+   * Can be specified as a list of class names or as a string containing class names separated by spaces.
+   *
+   * By default for video: `frame-aspect-ratio-16x9` and for audio `frame-aspect-ratio-4x3`.
+   */
+  posterElementClass?: string | string[];
   /** Initial media source volume. Value should be in range of [0 - 1] (it means: 0 - 100%). */
   volume?: number;
   /** Initial time position offset in seconds. */
@@ -56,8 +71,13 @@ export interface IMediaPlayerOptions {
 
   /** CSS selector or HTML container element to render player content. Auto created by default. */
   viewElement?: HTMLElement | string;
-  /** CSS class for player container HTML element. By default `media-player-item`. */
-  viewElementClass?: string;
+  /**
+   * CSS class for player container HTML element.
+   * Can be specified as a list of class names or as a string containing class names separated by spaces.
+   *
+   * By default `media-player-item`.
+   */
+  viewElementClass?: string | string[];
   /** Tag of player container HTML element. By default `div`. */
   viewElementTag?: string;
 
@@ -68,8 +88,13 @@ export interface IMediaPlayerOptions {
   /** Strategy to preload media content. By default `metadata`. */
   mediaSourcePreload?: TMediaSourcePreload;
 
-  /** CSS class to add to auto created video element. By default `poster`. */
-  videoElementClass?: string;
+  /**
+   * CSS class to add to auto created video element.
+   * Can be specified as a list of class names or as a string containing class names separated by spaces.
+   *
+   * By default `poster`.
+   */
+  videoElementClass?: string | string[];
 
   /**
    * Class of audio analyzer to visualize audio.
@@ -86,6 +111,12 @@ export interface IMediaPlayerOptions {
   mediaStateOptions?: IMediaStateOptions;
   /** CSS class to add to `buttonVolume` element if panel with `volumeSlider` is open.  By default `active`. */
   buttonVolumeClassActive?: string;
+  /** CSS class to add to `buttonFullscreen` when the element is in the full screen mode. By default `fullscreen-on`. */
+  buttonFullscreenClassOn?: string;
+  /** CSS class to add to `buttonFullscreen` when the element is not in the full screen mode. By default `fullscreen-off`. */
+  buttonFullscreenClassOff?: string;
+  /** Force the Fullscreen button to appear. */
+  enableButtonFullscreen?: boolean;
 
   /** HTML template with Media player structure. By default defined by {@link TEMPLATE_WITH_HORIZONTAL_VOLUME_SLIDER}. */
   template?: string;
@@ -97,6 +128,7 @@ export interface IMediaPlayerOptions {
    *
        - poster: '.poster'
        - analyzer: '.analyzer'
+       - controls: '.controls'
        - timePointer: '.time-pointer'
        - timerElapsed: '.timer.elapsed'
        - timerRemaining: '.timer.remaining'
@@ -115,6 +147,21 @@ export interface IMediaPlayerOptions {
    *   - UNDEFINED means remove media element only if it was automatically created.
    */
   removeMediaOnDestroy?: boolean;
+  /**
+   * The number of seconds after which the controls are hidden during playback.
+   * By default, it is automatically set to 1 second for video only.
+   */
+  autoHideControls?: number;
+  /**
+   * The number of seconds after which the analyzer is hidden during playback.
+   * By default, it is automatically set to 1 second for video only.
+   */
+  autoHideAnalyzer?: number;
+  /**
+   * The delay in seconds to display auto-hidden controls and the analyzer after the user taps the poster.
+   * By default, it is automatically set to 1 second for video only.
+   */
+  delayShowAfterTap?: number;
 }
 /**
  * HTML template for Media player without volume slide.
@@ -123,12 +170,13 @@ export const TEMPLATE_WITHOUT_VOLUME_SLIDER = `
   <div class="poster"></div>
   <div class="analyzer"></div>
   <div class="controls">
-    <button class="button button-play"><span class="glyphicon"/></button>
+    <button class="button button-play"><span class="media-controls-icon"/></button>
     <div class="timer elapsed"></div>
     <div class="time-pointer"></div>
     <!--div class="timer duration"></div-->
     <div class="timer remaining"></div>
-    <button class="button button-volume"><span class="glyphicon"/></button>
+    <button class="button button-volume"><span class="media-controls-icon"/></button>
+    <button class="button button-fullscreen fullscreen-off"><span class="media-controls-icon"/></button>
   </div>
 `;
 /**
@@ -186,23 +234,28 @@ export class MediaPlayer {
   protected viewSelectors: { [key in TMediaElements]: string | null | undefined } = {
     poster: '.poster',
     analyzer: '.analyzer',
+    controls: '.controls',
     timePointer: '.time-pointer',
     timerElapsed: '.timer.elapsed',
     timerRemaining: '.timer.remaining',
     timerDuration: '.timer.duration',
     buttonPlay: '.button-play',
     buttonVolume: '.button-volume',
+    buttonFullscreen: '.button-fullscreen',
     volumeSlider: '.volume-slider',
     volumeLevel: '.volume-level',
     volumeValue: '.volume-value',
   };
-  protected videoElementClass = 'poster';
-  protected viewElementClass = 'media-player-item';
+  protected videoElementClass: string | string[] = 'poster';
+  protected viewElementClass: string | string[] = 'media-player-item';
   protected viewElement: HTMLElement;
   protected viewElementTag: string = 'div';
   protected mediaElement: HTMLMediaElement;
   protected mediaType: MediaType = MediaType.AUDIO;
   protected poster?: string;
+  protected posterHint?: string;
+  protected posterOnClick?: (mp: MediaPlayer) => void;
+  protected posterElementClass?: string | string[];
   protected volume?: number;
   protected position?: number;
   protected mediaSourcePreload: TMediaSourcePreload = 'metadata';
@@ -215,18 +268,26 @@ export class MediaPlayer {
     enableControl: true,
   };
   protected mediaStateOptions: IMediaStateOptions = { enableControl: true, revertOnEnded: true };
-  protected buttonVolumeClassActive: string = 'active';
+  protected buttonVolumeClassActive = 'active';
+  protected buttonFullscreenClassOn = 'fullscreen-on';
+  protected buttonFullscreenClassOff = 'fullscreen-off';
+  protected enableButtonFullscreen?: boolean;
+  protected autoHideControls?: number;
+  protected autoHideAnalyzer?: number;
+  protected delayShowAfterTap?: number;
 
   // Instance params.
   protected viewElements: { [key in TMediaElements]: HTMLElement | null | undefined } = {
     poster: null,
     analyzer: null,
+    controls: null,
     timePointer: null,
     timerElapsed: null,
     timerRemaining: null,
     timerDuration: null,
     buttonPlay: null,
     buttonVolume: null,
+    buttonFullscreen: null,
     volumeSlider: null,
     volumeLevel: null,
     volumeValue: null,
@@ -243,7 +304,16 @@ export class MediaPlayer {
   protected mediaVolume?: MediaVolume;
   protected onPlay: () => void;
   protected onPause: () => void;
+  protected onEnded: () => void;
   protected onButtonVolumeClick: () => void;
+  protected onClickOutsideVolumeSlider: (event: PointerEvent) => void;
+  protected onButtonButtonFullscreenClick: () => void;
+  protected onClickViewElement: () => void;
+  protected controlsListeners: Record<string, Function> = {};
+  protected timerToHideControls?: any;
+  protected timerToHideAnalyzer?: any;
+  protected timerToHideAfterTap?: any;
+  protected isControlsUsed = false;
 
   /**
    * Constructor.
@@ -349,8 +419,17 @@ export class MediaPlayer {
     this.mediaTimePointer?.resize();
   }
 
+  /**
+   * Toggle media content playback.
+   */
+  toggle() {
+    this.mediaElement.paused ? this.play() : this.pause();
+  }
+
   protected setOptions(options?: IMediaPlayerOptions) {
     this.poster = options?.poster ?? this.poster;
+    this.posterHint = options?.posterHint ?? this.posterHint;
+    this.posterOnClick = options?.posterOnClick ?? this.posterOnClick;
     this.volume = options?.volume ?? this.volume;
     this.position = options?.position ?? this.position;
     if (this.volume && !(this.volume >= 0 && this.volume <= 1))
@@ -406,10 +485,40 @@ export class MediaPlayer {
     };
     this.mediaStateOptions = { ...this.mediaStateOptions, ...options?.mediaStateOptions };
     this.buttonVolumeClassActive = options?.buttonVolumeClassActive ?? this.buttonVolumeClassActive;
+    this.buttonFullscreenClassOn = options?.buttonFullscreenClassOn ?? this.buttonFullscreenClassOn;
+    this.buttonFullscreenClassOff =
+      options?.buttonFullscreenClassOff ?? this.buttonFullscreenClassOff;
+    this.enableButtonFullscreen = options?.enableButtonFullscreen ?? this.enableButtonFullscreen;
+
+    if (this.enableButtonFullscreen === undefined) {
+      this.enableButtonFullscreen = this.mediaType === MediaType.VIDEO;
+    }
+
+    // Auto hide controls.
+    this.autoHideControls = options?.autoHideControls ?? this.autoHideControls;
+    if (this.autoHideControls === undefined && this.mediaType === MediaType.VIDEO) {
+      this.autoHideControls = 1; // By default.
+    }
+    // Auto hide analyzer.
+    this.autoHideAnalyzer = options?.autoHideAnalyzer ?? this.autoHideAnalyzer;
+    // if (this.autoHideAnalyzer === undefined && this.mediaType === MediaType.VIDEO) {
+    //   this.autoHideAnalyzer = 0.5; // By default.
+    // }
+    // Auto show controls and analyzer after tap.
+    this.delayShowAfterTap = options?.delayShowAfterTap ?? this.delayShowAfterTap;
+    if (this.delayShowAfterTap === undefined && this.mediaType === MediaType.VIDEO) {
+      this.delayShowAfterTap = 1; // By default.
+    }
 
     this.isViewElementDefined = !!this.viewElement;
     this.isMediaElementDefined = !!this.mediaElement;
     this.removeMediaOnDestroy = options?.removeMediaOnDestroy ?? this.removeMediaOnDestroy;
+
+    // Set additional CSS class for poster with appropriate aspect-ratio.
+    this.posterElementClass =
+      options?.posterElementClass ??
+      this.posterElementClass ??
+      (this.mediaType === MediaType.VIDEO ? 'frame-aspect-ratio-16x9' : 'frame-aspect-ratio-4x3');
   }
 
   protected init() {
@@ -424,7 +533,10 @@ export class MediaPlayer {
    * @param source URL f media file source.
    */
   protected autoDetectMediaSourceType(source?: string): MediaType {
-    const extension = source.toLowerCase().substring(source.lastIndexOf('.') + 1);
+    const extension = source
+      .replace(/\?.*$/, '') // Remove query params if exists.
+      .replace(/^.*\./, '') // Remove all before the last dot.
+      .toLowerCase();
 
     if (MediaPlayer.videoExtensions.includes(extension)) {
       return MediaType.VIDEO;
@@ -477,8 +589,28 @@ export class MediaPlayer {
           this.viewElement.prepend(this.mediaElement);
         }
         // CSS class for video.
-        this.videoElementClass && this.mediaElement.classList.add(this.videoElementClass);
+        this.addCssClassesToElement(this.mediaElement, this.videoElementClass);
       }
+    }
+  }
+
+  /**
+   * Adds CSS classes to the given HTML element.
+   *
+   * @param el          HTML element.
+   * @param cssClasses  Classes as array or the string with 'space' as separator.
+   */
+  protected addCssClassesToElement(el: HTMLElement, cssClasses?: string[] | string) {
+    if (cssClasses) {
+      let classList: string[] = [];
+
+      if (typeof cssClasses === 'string') {
+        classList = cssClasses.replace(/\s+/, ' ').split(' ');
+      } else if (cssClasses instanceof Array) {
+        classList = cssClasses;
+      }
+
+      classList.forEach((className) => el.classList.add(className));
     }
   }
 
@@ -491,7 +623,7 @@ export class MediaPlayer {
     }
 
     this.viewElement.innerHTML = this.template; // Render template.
-    this.viewElement.classList.add(this.viewElementClass);
+    this.addCssClassesToElement(this.viewElement, this.viewElementClass);
     this.bindElements();
     this.createPoster();
     this.register();
@@ -522,6 +654,20 @@ export class MediaPlayer {
         (this.mediaElement as HTMLVideoElement).poster = this.poster;
       }
     }
+
+    const posterContainer =
+      this.mediaType === MediaType.VIDEO ? this.mediaElement : this.viewElements.poster;
+
+    if (posterContainer) {
+      // Add props to poster.
+      if (this.posterHint) posterContainer.title = this.posterHint;
+      if (this.posterOnClick) {
+        posterContainer.classList.add('clickable-element');
+        posterContainer.addEventListener('click', () => this.posterOnClick(this));
+      }
+      // Additional CSS class for poster.
+      this.addCssClassesToElement(posterContainer, this.posterElementClass);
+    }
   }
 
   protected register() {
@@ -533,18 +679,6 @@ export class MediaPlayer {
         this.viewElements.analyzer,
         this.analyzerOptions,
       );
-
-      this.onPlay = () => {
-        try {
-          this.analyzer?.start();
-        } catch (e) {
-          console.error(e);
-        }
-      };
-      this.onPause = () => this.analyzer?.stop();
-
-      this.mediaElement.addEventListener('play', this.onPlay);
-      this.mediaElement.addEventListener('pause', this.onPause);
     }
 
     // Time pointer.
@@ -591,8 +725,34 @@ export class MediaPlayer {
 
     // Button Volume.
     if (this.viewElements.buttonVolume) {
-      this.onButtonVolumeClick = () =>
+      // Handler for click outside the slider.
+      this.onClickOutsideVolumeSlider = (event: PointerEvent) => {
+        // If click was made outside slider and volume button.
+        if (
+          !this.viewElements.volumeSlider.contains(event.target as any) &&
+          !this.viewElements.buttonVolume.contains(event.target as any) &&
+          this.viewElements.volumeSlider.classList.contains(this.buttonVolumeClassActive)
+        ) {
+          // Remove active class and stop listening outside.
+          this.viewElements.volumeSlider.classList.remove(this.buttonVolumeClassActive);
+          document.removeEventListener('click', this.onClickOutsideVolumeSlider);
+        }
+      };
+
+      // Handler for click on volume button.
+      this.onButtonVolumeClick = () => {
+        if (this.viewElements.volumeSlider) {
+          document.removeEventListener('click', this.onClickOutsideVolumeSlider);
+          // Set handler to control click outside the slider, if slider is in an inactive state.
+          if (!this.viewElements.volumeSlider.classList.contains(this.buttonVolumeClassActive)) {
+            document.addEventListener('click', this.onClickOutsideVolumeSlider);
+          }
+        }
+
         this.viewElements.volumeSlider?.classList.toggle(this.buttonVolumeClassActive);
+      };
+
+      // Register handler.
       this.viewElements.buttonVolume.addEventListener('click', this.onButtonVolumeClick);
     }
 
@@ -604,12 +764,175 @@ export class MediaPlayer {
         iconButtonElement: this.viewElements.buttonVolume!,
       });
     }
+
+    // Button Fullscreen.
+    if (this.enableButtonFullscreen && this.viewElements.buttonFullscreen) {
+      const onToggle = () => {
+        this.resize();
+        this.viewElements.buttonFullscreen.classList.toggle(this.buttonFullscreenClassOff);
+        this.viewElements.buttonFullscreen.classList.toggle(this.buttonFullscreenClassOn);
+      };
+
+      if (getFullscreenElement()) {
+        this.viewElements.buttonFullscreen.classList.add(this.buttonFullscreenClassOn);
+      } else {
+        this.viewElements.buttonFullscreen.classList.add(this.buttonFullscreenClassOff);
+      }
+
+      this.onButtonButtonFullscreenClick = () => {
+        toggleFullScreen(
+          this.viewElement,
+          {},
+          () => onToggle(),
+          () => onToggle(),
+          (e) => console.warn(e),
+        );
+      };
+
+      this.viewElements.buttonFullscreen.addEventListener(
+        'click',
+        this.onButtonButtonFullscreenClick,
+      );
+    } else {
+      this.viewElements.buttonFullscreen?.remove();
+    }
+
+    // Playing controls.
+    this.onPlay = () => {
+      try {
+        this.analyzer?.start();
+      } catch (e) {
+        console.error(e);
+      }
+      this.autoHideViewElements();
+    };
+    this.onPause = () => {
+      this.analyzer?.stop();
+      this.autoShowViewElements();
+    };
+    this.onEnded = () => {
+      if (this.mediaType === MediaType.VIDEO) {
+        // Redraw the poster on ending @todo in future
+      }
+    };
+
+    this.mediaElement.addEventListener('play', this.onPlay);
+    this.mediaElement.addEventListener('pause', this.onPause);
+    this.mediaElement.addEventListener('ended', this.onEnded);
+
+    // Show controls after tap.
+    if (this.delayShowAfterTap) {
+      this.onClickViewElement = () => this.showAfterTap();
+      this.viewElement.addEventListener('click', this.onClickViewElement);
+    }
+
+    // Set flag: controls is in use or released,
+    // to avoid auto hiding when the user moves the time pointer.
+    if (this.autoHideControls && this.viewElements.controls) {
+      const useControls = () => (this.isControlsUsed = true);
+      const releaseControls = () => (this.isControlsUsed = false);
+      const releaseControlsWithDebounce = debounce(() => releaseControls(), 1000);
+      const touchControls = () => {
+        useControls();
+        releaseControlsWithDebounce();
+      };
+      // Define EventListeners map.
+      this.controlsListeners = {
+        mousedown: useControls,
+        mouseup: releaseControls,
+        touchmove: touchControls,
+      };
+      // Set EventListeners.
+      Object.keys(this.controlsListeners).forEach((key) =>
+        this.viewElements.controls.addEventListener(key as any, this.controlsListeners[key] as any),
+      );
+    }
+  }
+
+  /**
+   * Auto hides view element in given number of seconds.
+   *
+   * @param viewElement Given HTML element.
+   * @param seconds     Number of seconds.
+   *
+   * @returns The setTimeout timer reference.
+   */
+  protected autoHide(viewElement?: HTMLElement, seconds?: number) {
+    if (seconds && viewElement) {
+      return setTimeout(() => {
+        if (!this.mediaElement.paused) viewElement.classList.add('hidden-element');
+      }, seconds * 1000);
+    }
+  }
+
+  /**
+   * Immediately shows the view element hidden by `autoHide` method.
+   *
+   * @param viewElement Given HTML element.
+   * @param timer       The setTimeout timer reference.
+   */
+  protected autoShow(viewElement?: HTMLElement, timer?: any) {
+    if (timer) clearTimeout(timer);
+    if (viewElement) viewElement.classList.remove('hidden-element');
+  }
+
+  /**
+   * Auto hides the group of view elements.
+   */
+  protected autoHideViewElements() {
+    // If controls are in use now, we should wait until they are released.
+    if (this.isControlsUsed) {
+      setTimeout(() => this.autoHideViewElements(), 1000);
+      return;
+    }
+
+    // Hide the elements.
+    clearTimeout(this.timerToHideControls);
+    clearTimeout(this.timerToHideAnalyzer);
+
+    this.timerToHideControls = this.autoHide(this.viewElements.controls, this.autoHideControls);
+    this.timerToHideAnalyzer = this.autoHide(this.viewElements.analyzer, this.autoHideAnalyzer);
+  }
+
+  /**
+   * Immediately shows the group of view elements hidden by `autoHideViewElements` method.
+   */
+  protected autoShowViewElements() {
+    clearTimeout(this.timerToHideAfterTap);
+    this.autoShow(this.viewElements.controls, this.timerToHideControls);
+    this.autoShow(this.viewElements.analyzer, this.timerToHideAnalyzer);
+  }
+
+  /**
+   * Immediately shows the group of view elements hidden by `autoHideViewElements` and hides it after delay.
+   */
+  protected showAfterTap() {
+    if (this.delayShowAfterTap) {
+      this.autoShowViewElements();
+      this.timerToHideAfterTap = setTimeout(
+        () => this.autoHideViewElements(),
+        this.delayShowAfterTap * 1000,
+      );
+    }
   }
 
   protected unregister() {
     this.mediaElement.removeEventListener('play', this.onPlay);
     this.mediaElement.removeEventListener('pause', this.onPause);
+    this.mediaElement.removeEventListener('pause', this.onEnded);
+    this.viewElement.removeEventListener('click', this.onClickViewElement);
     this.viewElements.buttonVolume?.removeEventListener('click', this.onButtonVolumeClick);
+    Object.keys(this.controlsListeners).forEach((key) =>
+      this.viewElements.controls?.removeEventListener(
+        key as any,
+        this.controlsListeners[key] as any,
+      ),
+    );
+    document.removeEventListener('click', this.onClickOutsideVolumeSlider);
+    this.viewElements.buttonFullscreen?.removeEventListener(
+      'click',
+      this.onButtonButtonFullscreenClick,
+    );
     this.analyzer?.stop();
     this.mediaTimePointer?.destroy();
     this.timerElapsed?.destroy();

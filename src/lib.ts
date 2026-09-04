@@ -16,6 +16,12 @@ export { Slider, SliderType } from './utils/slider';
 export { mediaTimeToString } from './utils/media-time';
 export { bounds } from './utils/bounds';
 export { debounce } from './utils/debounce';
+export {
+  getFullscreenElement,
+  getRequestFullscreenFunction,
+  getExitFullscreenFunction,
+  toggleFullScreen,
+} from './utils/fullscreen';
 
 // Analyzers.
 export { AbstractAnalyzer } from './common/abstract-analyzer';

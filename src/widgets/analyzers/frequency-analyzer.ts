@@ -41,10 +41,24 @@ export class FrequencyAnalyzer extends AbstractAnalyzer {
 
     this.clear();
 
-    const barWidth = this.width / this.bufferLength;
+    let frequencyBins = this.bufferLength;
+
+    // Calculate the number of frequency bins depending on the upper frequency limit to display.
+    if (this.highFrequencyLimit) {
+      frequencyBins = Math.trunc(
+        (this.highFrequencyLimit * frequencyBins) / this.getFullFrequencyRange(),
+      );
+
+      if (frequencyBins <= 0 || frequencyBins > this.bufferLength) {
+        frequencyBins = this.bufferLength;
+      }
+    }
+    // console.log('frequencyBins:', frequencyBins, 'bufferLength:', this.bufferLength, this.getFrequencyForBin(frequencyBins-1));
+
+    const barWidth = this.width / frequencyBins;
     let x = 0;
 
-    for (let i = 0; i < this.bufferLength; i++) {
+    for (let i = 0; i < frequencyBins; i++) {
       const barHeight = (this.dataArray[i] / 255) * this.height;
       const opacity = this.dataArray[i].toString(16); // Convert to hex
 

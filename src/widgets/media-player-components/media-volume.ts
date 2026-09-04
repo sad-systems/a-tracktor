@@ -18,10 +18,14 @@ export interface IMediaVolumeOptions {
   iconButtonElement?: HTMLElement;
   /** CSS class to add to `iconButtonElement` when volume is muted. By default `muted`. */
   classMuted?: string;
-  /** CSS class to add to `iconButtonElement` when volume is up. By default `volume-up`. */
-  classVolumeUp?: string;
-  /** CSS class to add to `iconButtonElement` when volume is down. By default `volume-down`. */
-  classVolumeDown?: string;
+  /** CSS class to add to `iconButtonElement` when volume is high. By default `volume-high`. */
+  classVolumeHigh?: string;
+  /** CSS class to add to `iconButtonElement` when volume is medium. By default `volume-medium`. */
+  classVolumeMedium?: string;
+  /** CSS class to add to `iconButtonElement` when volume is low. By default `volume-low`. */
+  classVolumeLow?: string;
+  /** CSS class to add to `iconButtonElement` when volume is very low. By default `volume-very-low`. */
+  classVolumeVeryLow?: string;
 }
 
 /**
@@ -34,8 +38,10 @@ export class MediaVolume {
   protected slider?: Slider;
   protected sliderType?: SliderType;
   protected classMuted = 'muted';
-  protected classVolumeUp = 'volume-up';
-  protected classVolumeDown = 'volume-down';
+  protected classVolumeHigh = 'volume-high';
+  protected classVolumeMedium = 'volume-medium';
+  protected classVolumeLow = 'volume-low';
+  protected classVolumeVeryLow = 'volume-very-low';
   protected onVolumechange: (this: HTMLMediaElement, ev: Event) => void;
   protected onClick: (this: HTMLMediaElement, ev: Event) => void;
 
@@ -83,8 +89,10 @@ export class MediaVolume {
     this.sliderType = options?.sliderType ?? this.sliderType;
     this.iconButtonElement = options?.iconButtonElement ?? this.iconButtonElement;
     this.classMuted = options?.classMuted ?? this.classMuted;
-    this.classVolumeUp = options?.classVolumeUp ?? this.classVolumeUp;
-    this.classVolumeDown = options?.classVolumeDown ?? this.classVolumeDown;
+    this.classVolumeHigh = options?.classVolumeHigh ?? this.classVolumeHigh;
+    this.classVolumeLow = options?.classVolumeLow ?? this.classVolumeLow;
+    this.classVolumeVeryLow = options?.classVolumeVeryLow ?? this.classVolumeVeryLow;
+    this.classVolumeMedium = options?.classVolumeMedium ?? this.classVolumeMedium;
 
     if (!this.sliderType) {
       this.sliderType =
@@ -111,17 +119,27 @@ export class MediaVolume {
 
     // Set css class for current state.
     if (this.iconButtonElement) {
-      let currentClass =
-        valuePercent === 0
-          ? this.classMuted
-          : valuePercent > 50
-            ? this.classVolumeUp
-            : this.classVolumeDown;
+      let currentClass = this.classMuted;
+
+      if (valuePercent > 0) {
+        currentClass = this.classVolumeVeryLow;
+      }
+      if (valuePercent >= 25) {
+        currentClass = this.classVolumeLow;
+      }
+      if (valuePercent >= 50) {
+        currentClass = this.classVolumeMedium;
+      }
+      if (valuePercent >= 75) {
+        currentClass = this.classVolumeHigh;
+      }
 
       this.iconButtonElement.classList.remove(
         this.classMuted,
-        this.classVolumeUp,
-        this.classVolumeDown,
+        this.classVolumeHigh,
+        this.classVolumeMedium,
+        this.classVolumeLow,
+        this.classVolumeVeryLow,
       );
       this.iconButtonElement.classList.add(currentClass);
     }

@@ -1,10 +1,18 @@
 import '../styles/media-player.scss';
 import { AmplitudeAnalyzer, FrequencyAnalyzer, MediaPlayer, MediaPlayerList } from '../lib';
 import { MediaPlayerFactory } from '../widgets/media-player/media-player-factory';
+import projectInfo from '../../package.json';
 
 /**
  * Media player demo.
  */
+
+export const APPLICATION_VERSION = projectInfo.version;
+export const APP_BUILD_HASH = '?' + APPLICATION_VERSION;
+
+const textVersion = document.querySelector('.project-version');
+
+if (textVersion) textVersion.textContent = 'v' + APPLICATION_VERSION;
 
 const mediaList = [
   {
@@ -33,17 +41,44 @@ const mediaList = [
     source: 'assets/sounds/test-sound-40-20000.mp3', // 'assets/sounds/test-melody.mp3', //,
     playerOptions: {
       poster: 'https://ocarius.sadspace.ru/media/audio/2002/2002-1-1.jpg',
+      posterHint: 'Play audio',
+      posterOnClick: (mp) => {
+        console.log('Audio is clicked:');
+        mp.toggle();
+      },
       analyzerClass: FrequencyAnalyzer, //AmplitudeAnalyzer,
       analyzerOptions: { color: '#fbd298' },
       mediaTimePointerOptions: { pointerStyle: { top: '', bottom: '', background: '#fbd298' } },
     },
   },
   {
-    source: 'https://ocarius.sadspace.ru/media/video/dragon4x3.mp4',
+    source: 'https://ocarius.sadspace.ru/media/video/dragon4x3.mp4' + APP_BUILD_HASH,
     playerOptions: {
-      poster: 'https://ocarius.sadspace.ru/media/video/dragon4x3.jpg',
-      analyzerClass: FrequencyAnalyzer, //AmplitudeAnalyzer,
+      poster: 'https://ocarius.sadspace.ru/media/video/dragon16x9.jpg',
+      posterHint: 'Nothing but just click',
+      posterOnClick: (mp) => {
+        console.log('Video is clicked');
+        // mp.toggle();
+      },
+      analyzerClass: FrequencyAnalyzer, // AmplitudeAnalyzer,
       analyzerOptions: { color: '#d46b25' },
+      autoHideAnalyzer: 2,
+      mediaTimePointerOptions: { pointerStyle: { top: '', bottom: '', background: '#d46b25' } },
+    },
+  },
+  {
+    source: 'https://ocarius.sadspace.ru/media/video/dragon4x3.mp4' + APP_BUILD_HASH,
+    playerOptions: {
+      viewElementClass: 'media-player-item extended',
+      poster: 'https://ocarius.sadspace.ru/media/video/dragon4x3.jpg',
+      posterHint: 'Play/Pause video',
+      posterOnClick: (mp) => {
+        mp.toggle();
+      },
+      posterElementClass: 'frame-aspect-ratio-4x3',
+      analyzerClass: FrequencyAnalyzer, // AmplitudeAnalyzer,
+      analyzerOptions: { color: '#d46b25' },
+      autoHideAnalyzer: 0,
       mediaTimePointerOptions: { pointerStyle: { top: '', bottom: '', background: '#d46b25' } },
     },
   },
