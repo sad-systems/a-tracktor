@@ -32,7 +32,7 @@
     "build:css": "node-sass src/styles/media-player.scss dist/css/media-player.css",
     "make-declarations": "tsc -d src/lib.ts --outDir dist",
     "docs": "typedoc",
-    "npm-publish": "cd dist && npm publish --access public --token",
+    "npm-publish": "cd dist && npm publish --access public",
     "test": "echo \"Error: no test specified\" && exit 1",
     "format": "yarn prettier --write src/",
     "format-check": "yarn prettier --check src/"
