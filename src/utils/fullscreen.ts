@@ -38,6 +38,27 @@ export function getRequestFullscreenFunction(
 }
 
 /**
+ * Returns the vendor prefix for function and event of entering fullscreen mode (cross-browser).
+ *
+ * @param el HTML element.
+ */
+export function getRequestFullscreenPrefix(el: HTMLElement): string {
+  if (el.requestFullscreen) {
+    // All modern browsers.
+    return '';
+  } else if ((el as any).webkitRequestFullscreen) {
+    // Safari / old Chrome
+    return 'webkit';
+  } else if ((el as any).mozRequestFullScreen) {
+    // Old Firefox
+    return 'moz';
+  } else if ((el as any).msRequestFullscreen) {
+    // Old IE/Edge
+    return 'ms';
+  }
+}
+
+/**
  * Returns the cross-browser function for exiting full-screen mode.
  */
 export function getExitFullscreenFunction(): () => Promise<void> | undefined {
@@ -51,6 +72,8 @@ export function getExitFullscreenFunction(): () => Promise<void> | undefined {
     return (document as any).msExitFullscreen;
   }
 }
+
+let onFullscreenchange: any = null;
 
 /**
  * Toggles the given element to full screen mode.
@@ -68,6 +91,8 @@ export function toggleFullScreen(
   onExit?: () => void,
   onError?: (e: Error) => void,
 ) {
+  const eventFullscreenchange = getRequestFullscreenPrefix(el) + 'fullscreenchange';
+
   // Checks if we are already in full-screen mode.
   if (!getFullscreenElement()) {
     // If NO — entering the fullscreen mode.
@@ -76,7 +101,14 @@ export function toggleFullScreen(
     if (requestFullscreen) {
       void requestFullscreen
         .bind(el)(options)
-        .then(() => onEnter && onEnter())
+        .then(() => {
+          // Remove last handler on exit from full-screen mode without pressing a button.
+          document.removeEventListener(eventFullscreenchange, onFullscreenchange);
+          // Add a new handler on exit from full-screen mode without pressing a button.
+          onFullscreenchange = () => !getFullscreenElement() && onExit && onExit(); // Run a callback function when exiting full-screen mode.
+          document.addEventListener(eventFullscreenchange, onFullscreenchange);
+          onEnter && onEnter();
+        })
         .catch((e: Error) => onError && onError(e));
     } else {
       onError && onError(new Error('Unsupported requestFullscreen function'));
@@ -86,6 +118,9 @@ export function toggleFullScreen(
     const exitFullscreen = getExitFullscreenFunction();
 
     if (exitFullscreen) {
+      // Remove last handler on exit from full-screen mode without pressing a button.
+      document.removeEventListener(eventFullscreenchange, onFullscreenchange);
+      // Run a callback function when exiting full-screen mode.
       void exitFullscreen
         .bind(document)()
         .then(() => onExit && onExit())

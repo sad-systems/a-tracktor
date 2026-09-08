@@ -42,13 +42,16 @@ const mediaList = [
     playerOptions: {
       poster: 'https://ocarius.sadspace.ru/media/audio/2002/2002-1-1.jpg',
       posterHint: 'Play audio',
-      posterOnClick: (mp) => {
-        console.log('Audio is clicked:');
-        mp.toggle();
+      events: {
+        clickPoster: (mp) => {
+          console.log('Audio is clicked:');
+          mp.toggle();
+        },
       },
       analyzerClass: FrequencyAnalyzer, //AmplitudeAnalyzer,
       analyzerOptions: { color: '#fbd298' },
       mediaTimePointerOptions: { pointerStyle: { top: '', bottom: '', background: '#fbd298' } },
+      enableButtonFullscreen: true,
     },
   },
   {
@@ -56,9 +59,11 @@ const mediaList = [
     playerOptions: {
       poster: 'https://ocarius.sadspace.ru/media/video/dragon16x9.jpg',
       posterHint: 'Nothing but just click',
-      posterOnClick: (mp) => {
-        console.log('Video is clicked');
-        // mp.toggle();
+      events: {
+        clickPoster: (mp) => {
+          console.log('Video is clicked:');
+          // mp.toggle();
+        },
       },
       analyzerClass: FrequencyAnalyzer, // AmplitudeAnalyzer,
       analyzerOptions: { color: '#d46b25' },
@@ -72,8 +77,32 @@ const mediaList = [
       viewElementClass: 'media-player-item extended',
       poster: 'https://ocarius.sadspace.ru/media/video/dragon4x3.jpg',
       posterHint: 'Play/Pause video',
-      posterOnClick: (mp) => {
-        mp.toggle();
+      events: {
+        clickPoster: (mp) => {
+          mp.toggle();
+          console.log('Poster click');
+        },
+        enterFullscreen: () => {
+          console.log('Enter to Full-screen mode');
+        },
+        exitFullscreen: () => {
+          console.log('Exit from Full-screen mode');
+        },
+        play: (mp) => {
+          console.log('Play');
+        },
+        pause: (mp) => {
+          console.log('Pause');
+        },
+        ended: (mp) => {
+          console.log('Ended');
+        },
+        changeVolume: (value) => {
+          console.log('Volume set to:', value);
+        },
+        changePosition: (value) => {
+          console.log('Position set to:', value);
+        },
       },
       posterElementClass: 'frame-aspect-ratio-4x3',
       analyzerClass: FrequencyAnalyzer, // AmplitudeAnalyzer,

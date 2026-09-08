@@ -48,15 +48,63 @@ export enum MediaType {
   VIDEO = 'video',
 }
 /**
+ * List of Media player events for callbacks.
+ *
+ * - `clickPoster`     - Callback for "click on Poster" event. Signature:
+ *   ```
+ *   (mp: MediaPlayer) => void
+ *   ```
+ * - `enterFullscreen` - Callback for "enter to full-screen mode" event. Signature:
+ *   ```
+ *   (mp: MediaPlayer) => void
+ *   ```
+ * - `exitFullscreen`  - Callback for "exit from full-screen mode" event. Signature:
+ *   ```
+ *   (mp: MediaPlayer) => void
+ *   ```
+ * - `play`            - Callback for "start playing the media" event. Signature:
+ *   ```
+ *   (mp: MediaPlayer) => void
+ *   ```
+ * - `pause`           - Callback for "pause playing the media" event. Signature:
+ *   ```
+ *   (mp: MediaPlayer) => void
+ *   ```
+ * - `ended`           - Callback for "playing the media is ended" event. Signature:
+ *   ```
+ *   (mp: MediaPlayer) => void
+ *   ```
+ * - `changeVolume`    - Callback for "volume is changed" event. Signature:
+ * ```
+ *   (value: number) => void
+ * ```
+ *   Where the value is in the range from 0 to 1 (meaning: from 0 to 100% of the volume).
+ * - `changePosition`  - Callback for "position is changed by user" event. Signature:
+ * ```
+ *   (value: number) => void
+ * ```
+ *   Where the value is in the range from 0 to 1 (meaning: from 0 to 100% of the duration).
+ */
+export type TMediaPlayerEvents =
+  | 'clickPoster'
+  | 'enterFullscreen'
+  | 'exitFullscreen'
+  | 'play'
+  | 'pause'
+  | 'ended'
+  | 'changeVolume'
+  | 'changePosition';
+
+/**
  * Options for the MediaPlayer.
  */
 export interface IMediaPlayerOptions {
+  /** Hash array of Media player events to register callbacks. */
+  events?: { [key in TMediaPlayerEvents]: (params: any) => void };
   /** URL of poster image for the media source. */
   poster?: string;
   /** Hint for poster image. */
   posterHint?: string;
-  /** Callback for poster 'click' event. */
-  posterOnClick?: (mp: MediaPlayer) => void;
   /**
    * CSS class to add to poster element.
    * Can be specified as a list of class names or as a string containing class names separated by spaces.
@@ -254,7 +302,6 @@ export class MediaPlayer {
   protected mediaType: MediaType = MediaType.AUDIO;
   protected poster?: string;
   protected posterHint?: string;
-  protected posterOnClick?: (mp: MediaPlayer) => void;
   protected posterElementClass?: string | string[];
   protected volume?: number;
   protected position?: number;
@@ -275,6 +322,7 @@ export class MediaPlayer {
   protected autoHideControls?: number;
   protected autoHideAnalyzer?: number;
   protected delayShowAfterTap?: number;
+  protected events: { [key in TMediaPlayerEvents]?: (params: any) => void } = {};
 
   // Instance params.
   protected viewElements: { [key in TMediaElements]: HTMLElement | null | undefined } = {
@@ -301,10 +349,13 @@ export class MediaPlayer {
   protected timerRemaining?: MediaTimer;
   protected timerDuration?: MediaTimer;
   protected mediaState?: MediaState;
+  protected mediaState2?: MediaState;
   protected mediaVolume?: MediaVolume;
   protected onPlay: () => void;
   protected onPause: () => void;
   protected onEnded: () => void;
+  protected onChangeVolume?: () => void;
+  protected onChangePosition?: () => void;
   protected onButtonVolumeClick: () => void;
   protected onClickOutsideVolumeSlider: (event: PointerEvent) => void;
   protected onButtonButtonFullscreenClick: () => void;
@@ -429,7 +480,6 @@ export class MediaPlayer {
   protected setOptions(options?: IMediaPlayerOptions) {
     this.poster = options?.poster ?? this.poster;
     this.posterHint = options?.posterHint ?? this.posterHint;
-    this.posterOnClick = options?.posterOnClick ?? this.posterOnClick;
     this.volume = options?.volume ?? this.volume;
     this.position = options?.position ?? this.position;
     if (this.volume && !(this.volume >= 0 && this.volume <= 1))
@@ -519,6 +569,9 @@ export class MediaPlayer {
       options?.posterElementClass ??
       this.posterElementClass ??
       (this.mediaType === MediaType.VIDEO ? 'frame-aspect-ratio-16x9' : 'frame-aspect-ratio-4x3');
+
+    // Set user callbacks for events.
+    this.events = { ...this.events, ...options.events };
   }
 
   protected init() {
@@ -661,9 +714,9 @@ export class MediaPlayer {
     if (posterContainer) {
       // Add props to poster.
       if (this.posterHint) posterContainer.title = this.posterHint;
-      if (this.posterOnClick) {
+      if (this.events.clickPoster) {
         posterContainer.classList.add('clickable-element');
-        posterContainer.addEventListener('click', () => this.posterOnClick(this));
+        posterContainer.addEventListener('click', () => this.events.clickPoster(this));
       }
       // Additional CSS class for poster.
       this.addCssClassesToElement(posterContainer, this.posterElementClass);
@@ -722,6 +775,12 @@ export class MediaPlayer {
         this.mediaStateOptions,
       );
     }
+    // Add CSS state classes to Main container.
+    this.mediaState2 = new MediaState(this.mediaElement, this.viewElement, {
+      ...this.mediaStateOptions,
+      enableControl: false,
+      revertOnEnded: false,
+    });
 
     // Button Volume.
     if (this.viewElements.buttonVolume) {
@@ -771,9 +830,11 @@ export class MediaPlayer {
         this.resize();
         this.viewElements.buttonFullscreen.classList.toggle(this.buttonFullscreenClassOff);
         this.viewElements.buttonFullscreen.classList.toggle(this.buttonFullscreenClassOn);
+        this.viewElement.classList.toggle(this.buttonFullscreenClassOn);
       };
 
       if (getFullscreenElement()) {
+        this.viewElement.classList.add(this.buttonFullscreenClassOn);
         this.viewElements.buttonFullscreen.classList.add(this.buttonFullscreenClassOn);
       } else {
         this.viewElements.buttonFullscreen.classList.add(this.buttonFullscreenClassOff);
@@ -783,8 +844,14 @@ export class MediaPlayer {
         toggleFullScreen(
           this.viewElement,
           {},
-          () => onToggle(),
-          () => onToggle(),
+          () => {
+            onToggle();
+            this.events.enterFullscreen && this.events.enterFullscreen(this);
+          },
+          () => {
+            onToggle();
+            this.events.exitFullscreen && this.events.exitFullscreen(this);
+          },
           (e) => console.warn(e),
         );
       };
@@ -805,20 +872,39 @@ export class MediaPlayer {
         console.error(e);
       }
       this.autoHideViewElements();
+      this.events.play && this.events.play(this);
     };
     this.onPause = () => {
       this.analyzer?.stop();
       this.autoShowViewElements();
+      this.events.pause && this.events.pause(this);
     };
     this.onEnded = () => {
       if (this.mediaType === MediaType.VIDEO) {
         // Redraw the poster on ending @todo in future
       }
+      this.events.ended && this.events.ended(this);
     };
+    if (this.events.changeVolume) {
+      this.onChangeVolume = () => {
+        this.events.changeVolume(this.mediaElement.volume);
+      };
+    }
+    if (this.events.changePosition) {
+      this.onChangePosition = () => {
+        this.events.changePosition(
+          this.mediaElement.duration > 0
+            ? this.mediaElement.currentTime / this.mediaElement.duration
+            : 0,
+        );
+      };
+    }
 
     this.mediaElement.addEventListener('play', this.onPlay);
     this.mediaElement.addEventListener('pause', this.onPause);
     this.mediaElement.addEventListener('ended', this.onEnded);
+    this.mediaElement.addEventListener('volumechange', this.onChangeVolume);
+    this.mediaElement.addEventListener('seeking', this.onChangePosition);
 
     // Show controls after tap.
     if (this.delayShowAfterTap) {
@@ -919,7 +1005,9 @@ export class MediaPlayer {
   protected unregister() {
     this.mediaElement.removeEventListener('play', this.onPlay);
     this.mediaElement.removeEventListener('pause', this.onPause);
-    this.mediaElement.removeEventListener('pause', this.onEnded);
+    this.mediaElement.removeEventListener('ended', this.onEnded);
+    this.mediaElement.removeEventListener('volumechange', this.onChangeVolume);
+    this.mediaElement.removeEventListener('seeking', this.onChangePosition);
     this.viewElement.removeEventListener('click', this.onClickViewElement);
     this.viewElements.buttonVolume?.removeEventListener('click', this.onButtonVolumeClick);
     Object.keys(this.controlsListeners).forEach((key) =>
@@ -939,5 +1027,7 @@ export class MediaPlayer {
     this.timerRemaining?.destroy();
     this.timerDuration?.destroy();
     this.mediaVolume?.destroy();
+    this.mediaState?.destroy();
+    this.mediaState2?.destroy();
   }
 }

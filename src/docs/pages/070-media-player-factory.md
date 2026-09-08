@@ -8,7 +8,9 @@ category: Examples
 
 {@link media-player.MediaPlayerFactory | See class description here}.
 
-## 1. Define HTML container.
+## Case 1. Auto create view elements and manually add them to web page.
+
+### 1. Define HTML container.
 
 ```HTML
 <body>
@@ -16,7 +18,7 @@ category: Examples
 </body>
 ```
 
-## 2. Import classes and styles.
+### 2. Import classes and styles.
 
 ```javascript
 import '@sad-systems/a-tracktor/css/media-player.css'; // Use defaults media player and list CSS styles.
@@ -25,7 +27,7 @@ import '@sad-systems/a-tracktor/css/media-player.css'; // Use defaults media pla
 import { MediaPlayerFactory, FrequencyAnalyzer } from '@sad-systems/a-tracktor';
 ```
 
-## 3. Set the list of media files and player options.
+### 3. Set the list of media files and player options.
 
 ```javascript
 const mediaList = [
@@ -38,7 +40,7 @@ const mediaList = [
   },
   {
     // Second media with additional params.
-    source: 'audio2.mp3',
+    source: 'video.mp4',
     playerOptions: {
       poster: 'image2.jpg',
       volume: 0.5, // 50% of volume
@@ -52,13 +54,13 @@ const mediaList = [
 ];
 ```
 
-## 4. Create media player factory (with options if needed).
+### 4. Create media player factory (with options if needed).
 
 ```javascript
 const mediaPlayerFactory = new MediaPlayerFactory({ loop: true, single: false, volume: 0.75 });
 ```
 
-## 5. Create media players and add them to the web page.
+### 5. Create media players and add them to the web page.
 
 ```javascript
 const elContainer = document.querySelector('.media-player-list');
@@ -68,4 +70,30 @@ for (let item of mediaList) {
 
   elContainer.append(newPlayer.getViewElement());
 }
+```
+
+## CASE 2. Auto create media players and add them to existed view elements.
+
+### 1. Define HTML elements for media players.
+
+```HTML
+<body>
+  <div style="width: 400px">
+    <div class="media-player-1"></div>
+    <hr>
+    <div class="media-player-2"></div>
+  </div>
+</body>
+```
+
+### 2. (same as in Case 1)
+
+### 3. (same as in Case 1)
+
+### 4. (same as in Case 1)
+
+### 5. Create media players and add them to the web page.
+
+```javascript
+for (let item of mediaList) mediaPlayerFactory.createMediaPlayer(item.source, item.playerOptions);
 ```
