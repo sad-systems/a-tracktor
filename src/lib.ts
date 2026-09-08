@@ -61,7 +61,11 @@ export type { IMediaTimePointerOptions } from './widgets/media-player-components
 export type { IMediaVolumeOptions } from './widgets/media-player-components/media-volume';
 export type { IMediaStateOptions } from './widgets/media-player-components/media-state';
 export type { IWaveFormGraphOptions } from './widgets/analyzers/waveform-graph';
-export type { TMediaElements, TMediaSourcePreload } from './widgets/media-player/media-player';
+export type {
+  TMediaElements,
+  TMediaSourcePreload,
+  TMediaPlayerEvents,
+} from './widgets/media-player/media-player';
 
 // Deprecated.
 export { AudioTimePointer } from './_deprecated/audio-time-pointer';
