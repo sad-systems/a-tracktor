@@ -86,11 +86,11 @@ for (let item of mediaList) {
 </body>
 ```
 
-### 2. (same as in Case 1)
+### 2. ([the same as in Case 1.2](#2-import-classes-and-styles))
 
-### 3. (same as in Case 1)
+### 3. ([the same as in Case 1.3](#3-set-the-list-of-media-files-and-player-options))
 
-### 4. (same as in Case 1)
+### 4. ([the same as in Case 1.4](#4-create-media-player-factory-with-options-if-needed))
 
 ### 5. Create media players and add them to the web page.
 
