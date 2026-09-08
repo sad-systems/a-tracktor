@@ -100,7 +100,7 @@ export type TMediaPlayerEvents =
  */
 export interface IMediaPlayerOptions {
   /** Hash array of Media player events to register callbacks. */
-  events?: { [key in TMediaPlayerEvents]: (params: any) => void };
+  events?: { [key in TMediaPlayerEvents]?: (params: any) => void };
   /** URL of poster image for the media source. */
   poster?: string;
   /** Hint for poster image. */
@@ -187,7 +187,7 @@ export interface IMediaPlayerOptions {
        - volumeLevel: '.volume-level'
        - volumeValue: '.volume-value'
    */
-  viewSelectors?: { [key in TMediaElements]: string | null | undefined };
+  viewSelectors?: { [key in TMediaElements]?: string | null | undefined };
   /**
    * Possible cases:
    *   - TRUE means always remove media element when destroy method is called.
@@ -279,7 +279,7 @@ export class MediaPlayer {
 
   // User options.
   protected template = TEMPLATE_WITH_HORIZONTAL_VOLUME_SLIDER;
-  protected viewSelectors: { [key in TMediaElements]: string | null | undefined } = {
+  protected viewSelectors: { [key in TMediaElements]?: string | null | undefined } = {
     poster: '.poster',
     analyzer: '.analyzer',
     controls: '.controls',
@@ -325,7 +325,7 @@ export class MediaPlayer {
   protected events: { [key in TMediaPlayerEvents]?: (params: any) => void } = {};
 
   // Instance params.
-  protected viewElements: { [key in TMediaElements]: HTMLElement | null | undefined } = {
+  protected viewElements: { [key in TMediaElements]?: HTMLElement | null | undefined } = {
     poster: null,
     analyzer: null,
     controls: null,
