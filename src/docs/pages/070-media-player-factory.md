@@ -72,7 +72,7 @@ for (let item of mediaList) {
 }
 ```
 
-## CASE 2. Auto create media players and add them to existed view elements.
+## Case 2. Auto create media players and add them to existed view elements.
 
 ### 1. Define HTML elements for media players.
 
