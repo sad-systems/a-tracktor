@@ -1,6 +1,6 @@
 # <img src="src/docs/assets/images/a-tracktor-2.png" width="100%">
 
-The Javascript library contains a set of widgets to visualize audio data  
+The Javascript library contains a set of widgets to visualize audio/video data  
 and add a customizable media player to a web page.
 
 > Сменить язык: [![Русский](src/docs/assets/images/ru.gif)](README.ru.md) [![English](src/docs/assets/images/en.gif)](README.md)

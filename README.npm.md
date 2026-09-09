@@ -1,6 +1,6 @@
 # A-tracktor
 
-The Javascript library contains a set of widgets to visualize audio data  
+The Javascript library contains a set of widgets to visualize audio/video data  
 and add a customizable media player to a web page.
 
 ## Documentation

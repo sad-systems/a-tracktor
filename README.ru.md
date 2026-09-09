@@ -1,6 +1,6 @@
 # <img src="src/docs/assets/images/a-tracktor-2.png" width="100%">
 
-Javascript библиотека виджетов для визуализации аудио данных и 
+Javascript библиотека виджетов для визуализации аудио/видео данных и 
 добавления настраиваемого медиа плеера на веб страницу.
 
 > Change language: [![Русский](src/docs/assets/images/ru.gif)](README.ru.md) [![English](src/docs/assets/images/en.gif)](README.md)
