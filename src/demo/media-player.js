@@ -1,5 +1,5 @@
 import '../styles/media-player.scss';
-import { AmplitudeAnalyzer, FrequencyAnalyzer, MediaPlayer, MediaPlayerList } from '../lib';
+import { AmplitudeAnalyzer, FrequencyAnalyzer, TEMPLATE_WITH_VERTICAL_VOLUME_SLIDER } from '../lib';
 import { MediaPlayerFactory } from '../widgets/media-player/media-player-factory';
 import projectInfo from '../../package.json';
 
@@ -74,7 +74,8 @@ const mediaList = [
   {
     source: 'https://ocarius.sadspace.ru/media/video/dragon4x3.mp4' + APP_BUILD_HASH,
     playerOptions: {
-      viewElementClass: 'media-player-item extended',
+      template: TEMPLATE_WITH_VERTICAL_VOLUME_SLIDER,
+      viewElementClass: 'media-player-item clipped-element',
       poster: 'https://ocarius.sadspace.ru/media/video/dragon4x3.jpg',
       posterHint: 'Play/Pause video',
       events: {

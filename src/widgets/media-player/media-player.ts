@@ -14,6 +14,7 @@ import { AbstractAnalyzer } from '../../common/abstract-analyzer';
 import { WaveformAnalyzer } from '../analyzers/waveform-analyzer';
 import { getFullscreenElement, toggleFullScreen } from '../../utils/fullscreen';
 import { debounce } from '../../utils/debounce';
+import { SliderType } from '../../utils/slider';
 
 /**
  * Strategy to preload media content.
@@ -821,6 +822,7 @@ export class MediaPlayer {
         levelViewElement: this.viewElements.volumeLevel!,
         levelTextElement: this.viewElements.volumeValue!,
         iconButtonElement: this.viewElements.buttonVolume!,
+        sliderType: this.viewElements.volumeSlider.classList.contains('vertical') && SliderType.Y,
       });
     }
 

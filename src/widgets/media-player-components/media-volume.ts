@@ -74,10 +74,9 @@ export class MediaVolume {
     this.displayState();
 
     this.onVolumechange = () => this.displayState();
-    this.onClick = (event: MouseEvent) => this.setVolumeByClick(event);
 
     this.mediaElement.addEventListener('volumechange', this.onVolumechange);
-    this.viewElement.addEventListener('mousedown', this.onClick);
+
     this.slider = new Slider(this.viewElement, (pos) => this.setVolume(pos), {
       type: this.sliderType,
     });
@@ -150,19 +149,5 @@ export class MediaVolume {
 
   protected setVolume(percent: number) {
     this.mediaElement.volume = Number(percent.toFixed(2));
-  }
-
-  protected setVolumeByClick(event: MouseEvent) {
-    if (this.sliderType === SliderType.X) {
-      if (event.offsetX === 0 || !this.viewElement.offsetWidth) return; // @workaround: ignore random 0 offset on click.
-
-      this.setVolume(event.offsetX / this.viewElement.offsetWidth);
-    } else {
-      if (event.offsetY === 0 || !this.viewElement.offsetHeight) return; // @workaround: ignore random 0 offset on click.
-
-      this.setVolume(
-        (this.viewElement.offsetHeight - event.offsetY) / this.viewElement.offsetHeight,
-      );
-    }
   }
 }

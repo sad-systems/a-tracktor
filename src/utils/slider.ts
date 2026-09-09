@@ -16,11 +16,11 @@ interface ISliderEventHandler {
    */
   onMousemove(event: MouseEvent): void;
   /**
-   * Changes position on double click.
+   * Changes position on click or touch.
    *
    * @param event Mouse event.
    */
-  onDblclick(event: MouseEvent): void;
+  onClick(event: MouseEvent): void;
   /**
    * Changes position on touch move (for mobile devices).
    *
@@ -41,23 +41,27 @@ class SliderEventHandlerX implements ISliderEventHandler {
 
   onMousemove(event: MouseEvent) {
     if (event.buttons === 1) {
-      const x = event.pageX;
-      const pos = (x - this.element.getBoundingClientRect().left) / this.element.clientWidth;
+      const rect = this.element.getBoundingClientRect();
+      const x = event.clientX - rect.left;
+      const pos = x / rect.width;
 
       this.callbackUpdateValue(bounds(pos));
     }
   }
 
-  onDblclick(event: MouseEvent) {
-    const x = event.pageX;
-    const pos = (x - this.element.getBoundingClientRect().left) / this.element.clientWidth;
+  onClick(event: MouseEvent) {
+    const rect = this.element.getBoundingClientRect();
+    const x = event.clientX - rect.left;
+    const pos = x / rect.width;
 
     this.callbackUpdateValue(bounds(pos));
   }
 
   onTouchmove(event: TouchEvent): void {
-    const x = event.touches ? event.touches[0]?.pageX : (event as any).pageX;
-    const pos = (x - this.element.getBoundingClientRect().left) / this.element.clientWidth;
+    const touchX = event.touches ? event.touches[0]?.clientX : (event as any).clientX;
+    const rect = this.element.getBoundingClientRect();
+    const x = touchX - rect.left;
+    const pos = x / rect.width;
 
     this.callbackUpdateValue(bounds(pos));
   }
@@ -75,23 +79,27 @@ class SliderEventHandlerY implements ISliderEventHandler {
 
   onMousemove(event: MouseEvent) {
     if (event.buttons === 1) {
-      const y = event.pageY;
-      const pos = 1 - (y - this.element.getBoundingClientRect().top) / this.element.clientHeight;
+      const rect = this.element.getBoundingClientRect();
+      const y = event.clientY - rect.top;
+      const pos = 1 - y / rect.height;
 
       this.callbackUpdateValue(bounds(pos));
     }
   }
 
-  onDblclick(event: MouseEvent) {
-    const y = event.pageY;
-    const pos = 1 - (y - this.element.getBoundingClientRect().top) / this.element.clientHeight;
+  onClick(event: MouseEvent) {
+    const rect = this.element.getBoundingClientRect();
+    const y = event.clientY - rect.top;
+    const pos = 1 - y / rect.height;
 
     this.callbackUpdateValue(bounds(pos));
   }
 
   onTouchmove(event: TouchEvent): void {
-    const y = event.touches ? event.touches[0]?.pageY : (event as any).pageY;
-    const pos = 1 - (y - this.element.getBoundingClientRect().top) / this.element.clientHeight;
+    const touchY = event.touches ? event.touches[0]?.clientY : (event as any).clientY;
+    const rect = this.element.getBoundingClientRect();
+    const y = touchY - rect.top;
+    const pos = 1 - y / rect.height;
 
     this.callbackUpdateValue(bounds(pos));
   }
@@ -128,8 +136,8 @@ export enum SliderType {
 export class Slider {
   private readonly eventHandler: ISliderEventHandler;
   private readonly onMousemove: Function;
-  private readonly onDblclick: Function;
   private readonly onTouchmove: Function;
+  private readonly onClick: Function;
 
   constructor(
     private element: HTMLElement,
@@ -142,17 +150,17 @@ export class Slider {
         : new SliderEventHandlerX(element, callbackUpdateValue);
 
     this.onMousemove = (event: MouseEvent) => this.eventHandler.onMousemove(event);
-    this.onDblclick = (event: MouseEvent) => this.eventHandler.onDblclick(event);
+    this.onClick = (event: MouseEvent) => this.eventHandler.onClick(event);
     this.onTouchmove = (event: TouchEvent) => this.eventHandler.onTouchmove(event);
 
     element.addEventListener('mousemove', this.onMousemove as EventListener);
-    element.addEventListener('dblclick', this.onDblclick as EventListener);
+    element.addEventListener('pointerdown', this.onClick as EventListener);
     element.addEventListener('touchmove', this.onTouchmove as EventListener);
   }
 
   destroy() {
     this.element.removeEventListener('mousemove', this.onMousemove as EventListener);
-    this.element.removeEventListener('dblclick', this.onDblclick as EventListener);
+    this.element.removeEventListener('pointerdown', this.onClick as EventListener);
     this.element.removeEventListener('touchmove', this.onTouchmove as EventListener);
   }
 }

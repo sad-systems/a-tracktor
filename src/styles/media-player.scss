@@ -1,22 +1,9 @@
+@use 'sass:math';
 @import '../assets/icons-media-controls.css';
 
-/**
- * Media player list.
- */
-.media-player-list {
-  margin: 0 auto;
-  text-align: center;
-  display: flex;
-  flex-direction: column;
-  place-items: center;
-  justify-content: center;
-
-  ul {
-    padding: 0;
-    margin: 0;
-    list-style-type: none;
-  }
-}
+//
+// Mixins.
+//
 
 /**
  * Visibility animation.
@@ -35,8 +22,31 @@
   @include visibility-transition();
 }
 
+//
+// Modifiers.
+//
+
 /**
- * List item.
+ * The element is clipped outside its own border.
+ * Suitable for 'media-player-item' with vertical volume slider.
+ */
+.clipped-element {
+  clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%); // Hide all out of border.
+}
+
+/**
+ * Pointer for clickable element.
+ */
+.clickable-element {
+  cursor: pointer;
+}
+
+//
+// Media player.
+//
+
+/**
+ * Media player container.
  */
 .media-player-item {
   position: relative;
@@ -47,9 +57,16 @@
   min-width: 20em;
   $panel-size: 3.25em; // 40px;
 
-  // Pointer for clickable elements.
-  .clickable-element {
-    cursor: pointer;
+  // Full-screen mode modifications.
+  &.fullscreen-on {
+    font-size: 16px;
+
+    .time-pointer {
+      // Stripe under the pointer (Полоска под бегунком указателя).
+      &:before {
+        background-color: rgba(255, 255, 255, 0.25);
+      }
+    }
   }
 
   // Hide with fade.
@@ -110,7 +127,6 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    // font-size: 12px;
     padding: 0 0.5em;
     background-color: #000a;
     border-radius: 3px;
@@ -124,7 +140,7 @@
     // position: relative; // Assigned automatically.
     width: 100%;
     height: 100%;
-    margin: 0 0.5em;
+    margin: 0 math.div($knob-size, 2);
     cursor: pointer;
     user-select: none;
     display: flex;
@@ -154,8 +170,8 @@
     content: '';
     position: absolute;
     display: block;
-    right: -($knob-size / 2);
-    top: -($knob-size / 2 - $fader-size / 2);
+    right: - math.div($knob-size, 2);
+    top: math.div($fader-size, 2) - math.div($knob-size, 2);
     width: $knob-size;
     height: $knob-size;
     border-radius: 100%;
@@ -169,7 +185,8 @@
     min-height: 1.75em;
     font-size: 1.25em;
     border-radius: 100%;
-    margin: auto;
+    margin: 0; // auto;
+    padding: 0;
     background-color: #000000bf;
     border: none;
     color: #fff;
@@ -298,6 +315,7 @@
     &.vertical {
       width: $panel-size * 1.25;
       height: calc(100% - #{$panel-size});
+      top: 0;
       right: 0;
 
       .volume-level {
@@ -328,6 +346,13 @@
     }
   }
 
+  .fx-slide-right {
+    transform: translateX(-100%);
+    &.active {
+      transform: translateX(0);
+    }
+  }
+
   .volume-level {
     position: absolute;
     top: 0;
@@ -338,8 +363,8 @@
 
   .volume-value {
     user-select: none;
-    // font-size: 12px;
     padding: 1.25em 1em 0.5em;
+    text-align: right;
   }
 
   .volume-value::after {
@@ -359,5 +384,23 @@
   .horizontal-level {
     background-image: linear-gradient(90deg, rgba(0, 0, 0, 0) 50%, lime 50%);
     background-size: 4px 4px;
+  }
+}
+
+/**
+ * Media player list.
+ */
+.media-player-list {
+  margin: 0 auto;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  place-items: center;
+  justify-content: center;
+
+  ul {
+    padding: 0;
+    margin: 0;
+    list-style-type: none;
   }
 }
